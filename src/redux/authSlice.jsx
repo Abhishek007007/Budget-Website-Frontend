@@ -27,6 +27,23 @@ export const userLogin = createAsyncThunk(
   }
 );
 
+export const userLogout = createAsyncThunk(
+  "auth/logout",
+  async (_, { rejectWithValue }) => {
+    try {
+      await axios.post(import.meta.env.VITE_BASE_API_URL + "/api/v1/logout/", {
+        refresh: Cookies.get("refresh"),
+      });
+      Cookies.remove("access");
+      Cookies.remove("refresh");
+      Cookies.remove("user");
+      return null;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
 export const authSlice = createSlice({
   name: "auth",
   initialState: {
@@ -62,6 +79,22 @@ export const authSlice = createSlice({
         state.success = true;
       })
       .addCase(userLogin.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.error = payload;
+        state.success = false;
+      })
+      .addCase(userLogout.pending, (state) => {
+        state.loading = true;
+        state.error = false;
+      })
+      .addCase(userLogout.fulfilled, (state) => {
+        state.loading = false;
+        state.user = null;
+        state.access_token = "";
+        state.refresh_token = "";
+        state.success = true;
+      })
+      .addCase(userLogout.rejected, (state, { payload }) => {
         state.loading = false;
         state.error = payload;
         state.success = false;
