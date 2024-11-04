@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import { MDBInput, MDBBtn, MDBCard, MDBCardBody } from "mdb-react-ui-kit";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import Cookies from "js-cookie";
+import { userLogin } from "../redux/authSlice";
+import { useNavigate } from "react-router";
+
 const LoginFormModel = {
   username: "",
   password: "",
@@ -8,6 +13,9 @@ const LoginFormModel = {
 
 function LoginPage() {
   const [form, setForm] = useState(LoginFormModel);
+  const auth = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   function handleChange(e) {
     const newForm = { ...form };
@@ -15,14 +23,19 @@ function LoginPage() {
     setForm(newForm);
   }
 
-  async function handleSubmit(e) {
+  function handleSubmit(e) {
     e.preventDefault();
-    const resp = await axios.post(
-      import.meta.env.VITE_BASE_API_URL + "/api/v1/login/",
-      form
-    );
-    console.log(resp);
+    // try {
+    //   const resp = await axios.post(
+    //     import.meta.env.VITE_BASE_API_URL + "/api/v1/login/",
+    //     form
+    //   );
+    //   console.log(resp);
+    //   Cookies.set("access", resp.data.access);
+    //   Cookies.set("refresh", resp.data.refresh);
+    dispatch(userLogin(form));
     setForm(LoginFormModel);
+    navigate("/");
   }
 
   return (

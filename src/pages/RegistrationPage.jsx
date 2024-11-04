@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { MDBInput, MDBBtn, MDBCard, MDBCardBody } from "mdb-react-ui-kit";
 import axios from "axios";
+import { useNavigate } from "react-router";
 const RegistrationFormModel = {
   username: "",
   email: "",
@@ -10,6 +11,7 @@ const RegistrationFormModel = {
 
 function RegistrationPage() {
   const [form, setForm] = useState(RegistrationFormModel);
+  const navigate = useNavigate();
 
   function handleChange(e) {
     const newForm = { ...form };
@@ -19,12 +21,17 @@ function RegistrationPage() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    const resp = await axios.post(
-      import.meta.env.VITE_BASE_API_URL + "/api/v1/register/",
-      form
-    );
-    console.log(resp);
-    setForm(RegistrationFormModel);
+    try {
+      const resp = await axios.post(
+        import.meta.env.VITE_BASE_API_URL + "/api/v1/register/",
+        form
+      );
+      console.log(resp);
+      setForm(RegistrationFormModel);
+      navigate("/login");
+    } catch (error) {
+      console.log(error.response.data.error);
+    }
   }
 
   return (
