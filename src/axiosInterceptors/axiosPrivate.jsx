@@ -13,9 +13,17 @@ const axiosPrivate = axios.create({
 
 async function refreshAccessToken() {
   try {
-    const resp = await axiosPrivate.post("/api/v1/token/refresh/", {
-      refresh: refresh,
-    });
+    const resp = await axios.post(
+      import.meta.env.VITE_BASE_API_URL + "/api/v1/token/refresh/",
+      {
+        refresh: refresh,
+      },
+      {
+        headers: {
+          Authorization: "Bearer " + access,
+        },
+      }
+    );
     console.log(resp.data);
     Cookies.set("access", resp.data.access);
     Cookies.set("refresh", resp.data.refresh);

@@ -2,20 +2,15 @@ import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Navigate } from "react-router";
 
-function ProtectedRoute({ children }) {
+function PublicProtectedRoute({ children }) {
   const auth = useSelector((state) => state.auth);
   useEffect(() => {}, [auth.loading]);
 
   if (auth.user !== null) {
-    return children;
+    return <Navigate to="/" />;
   }
 
-  if (auth.loading) {
-    return <h1>Loading</h1>;
-  }
-
-  console.log(auth);
-  return <Navigate to="/login" />;
+  return children;
 }
 
-export default ProtectedRoute;
+export default PublicProtectedRoute;
