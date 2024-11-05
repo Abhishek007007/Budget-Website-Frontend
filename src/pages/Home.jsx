@@ -39,7 +39,7 @@ function Home() {
     }
   }
   return (
-    <div className="vh-100 vw-100 p-3 d-flex gap-3">
+    <div className="vh-100 vw-100 p-3 d-flex flex-row gap-3">
       <MDBCard className="w-25 h-100 p-3 bg-primary d-flex flex-column justify-content-between">
         <div className="d-flex flex-column justify-content">
           <button onClick={() => setSelectedTab("Dashboard")} className="btn">

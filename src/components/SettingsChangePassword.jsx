@@ -54,7 +54,7 @@ function SettingsChangePassword() {
   return (
     <>
       {isChangingPassword ? (
-        <div className="w-100 d-flex flex-column gap-2">
+        <form className="w-100 d-flex flex-column gap-2">
           <div className="w-100 d-flex flex-row justify-content-evenly gap-2">
             <input
               type="password"
@@ -113,7 +113,7 @@ function SettingsChangePassword() {
               </button>
             </div>
           </div>
-        </div>
+        </form>
       ) : (
         <div className="w-100 d-flex flex-row justify-content-between">
           <span className="align-content-center">
