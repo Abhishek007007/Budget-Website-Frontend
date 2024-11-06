@@ -1,68 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Table, Tag, Button, Input, Space, Select } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
+import { useDispatch, useSelector } from "react-redux";
+import { getTransactions } from "../redux/transactionSlice"; 
 
 const { Option } = Select;
 
 const Transactions = () => {
+  const dispatch = useDispatch();
+
+  const transactions = useSelector((state) => state.transactions.transactionsList);
+  const loading = useSelector((state) => state.transactions.loading);
+  const error = useSelector((state) => state.transactions.error);
+
   const [searchText, setSearchText] = useState('');
   const [filteredData, setFilteredData] = useState([]);
 
-  const transactions = [
-    {
-      id: 2,
-      source: {
-        source_name: "Salary from ust",
-      },
-      amount: "3000.00",
-      description: "Monthly salary",
-      date: "2024-11-01",
-      type: "income",
-    },
-    {
-      id: 4,
-      source: {
-        source_name: "Salary from ust",
-      },
-      amount: "2000.00",
-      description: "Monthly salary",
-      date: "2024-11-01",
-      type: "income",
-    },
-    {
-      id: 4,
-      category: {
-        name: "Eating Out",
-      },
-      amount: "150.00",
-      description: "Grocery shopping",
-      date: "2024-11-02",
-      type: "expense",
-    },
-    {
-      id: 5,
-      category: {
-        name: "HouseHold",
-      },
-      amount: "1500.00",
-      description: "Household shopping",
-      date: "2024-11-02",
-      type: "expense",
-    },
-  ];
 
+  useEffect(() => {
+    dispatch(getTransactions());
+  }, []);
+
+  // Columns for the table
   const columns = [
-    {
-      title: "Source/Category",
-      dataIndex: "sourceOrCategory",
-      render: (text, record) => (
-        <span>
-          {record.source ? record.source.source_name : record.category ? record.category.name : 'N/A'}
-        </span>
-      ),
-      sorter: (a, b) => a.sourceOrCategory.localeCompare(b.sourceOrCategory), // Sort by name
-      sortDirections: ['ascend', 'descend'],
-    },
     {
       title: "Description",
       dataIndex: "description",
@@ -123,6 +83,19 @@ const Transactions = () => {
     );
   };
 
+  // Handle filter by type (Income/Expense)
+  const handleTypeFilter = (value) => {
+    if (value === "all") {
+      setFilteredData(data);
+    } else {
+      setFilteredData(data.filter((item) => item.type === value));
+    }
+  };
+
+  // Show loading state while fetching
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
   return (
     <div>
       <Space style={{ marginBottom: 16, marginTop: 10 }}>
@@ -135,13 +108,7 @@ const Transactions = () => {
         <Select
           defaultValue="all"
           style={{ width: 120 }}
-          onChange={(value) => {
-            if (value === "all") {
-              setFilteredData(data);
-            } else {
-              setFilteredData(data.filter((item) => item.type === value));
-            }
-          }}
+          onChange={handleTypeFilter}
         >
           <Option value="all">All</Option>
           <Option value="income">Income</Option>

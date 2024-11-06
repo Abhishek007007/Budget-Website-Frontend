@@ -1,21 +1,26 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Row, Col, Card, Table, Typography, Tag } from 'antd';
 import ApexCharts from 'react-apexcharts'; // Import the ApexCharts component
-import { useSelector } from 'react-redux';
-
+import { useSelector, useDispatch } from 'react-redux';
+import { getTransactions } from "../redux/transactionSlice"; 
 const { Title } = Typography;
 
 function Dashboard() {
+  const dispatch = useDispatch()
   const auth = useSelector((state) => state.auth);
-
+  const transactions = useSelector((state) => state.transactions.transactionsList);
+  useEffect(() => {
+    dispatch(getTransactions());
+  }, []);
+  
   // Sample data for the chart: Monthly Income and Expense
   const [chartData, setChartData] = useState({
     series: [{
       name: 'Income',
-      data: [1000, 1500, 1200, 1600, 1800, 2200, 2500, 2700, 2900, 3100, 3500, 3800] // Income data for each month
+      data: [1000, 1500, 1200, 1600, 1800, 2200, 2500, 2700, 2900, 3100, 3500, 3800]
     }, {
       name: 'Expense',
-      data: [800, 1200, 1000, 1300, 1500, 1600, 1800, 1900, 2100, 2200, 2400, 2500] // Expense data for each month
+      data: [800, 1200, 1000, 1300, 1500, 1600, 1800, 1900, 2100, 2200, 2400, 2500] 
     }],
     options: {
       chart: {
@@ -94,32 +99,6 @@ function Dashboard() {
   });
 
   // Sample data for the transactions table
-  const transactions = [
-    {
-      key: '1',
-      description: 'Salary',
-      amount: '₹5000',
-      type: 'Income'
-    },
-    {
-      key: '2',
-      description: 'Rent Payment',
-      amount: '₹1500',
-      type: 'Expense'
-    },
-    {
-      key: '3',
-      description: 'Grocery Shopping',
-      amount: '₹500',
-      type: 'Expense'
-    },
-    {
-      key: '4',
-      description: 'Freelance Work',
-      amount: '₹1000',
-      type: 'Income'
-    },
-  ];
 
   // Columns for the transactions table
   const columns = [
@@ -138,9 +117,7 @@ function Dashboard() {
       dataIndex: 'type',
       key: 'type',
       render: (type) => (
-        <Tag color={type === 'Income' ? 'blue' : 'red'}>
-          {type}
-        </Tag>
+        <Tag color={type === "income" ? "green" : "red"}>{type.charAt(0).toUpperCase() + type.slice(1)}</Tag>
       ),
     },
   ];
@@ -254,7 +231,7 @@ function Dashboard() {
             >
               <Table
                 columns={columns}
-                dataSource={transactions}
+                dataSource={transactions.slice(0,6)}
                 pagination={false}
                 rowKey="key"
               />
