@@ -55,24 +55,13 @@ export const authSlice = createSlice({
     success: false,
     loading: false,
   },
-  // reducers: {
-  //   set_data: (state, action) => {
-  //     state.id = action.payload.id;
-  //     state.username = action.payload.username;
-  //     state.email = action.payload.email;
-  //     state.access_token = action.payload.access_token;
-  //     state.refresh_token = action.payload.refresh_token;
-  //     state.isLoggedIn = action.payload.isLoggedIn;
-  //   },
-  // },
   extraReducers: (builder) => {
     builder
       .addCase(userLogin.pending, (state) => {
         state.loading = true;
-        state.error = false;
+        state.error = null;
       })
       .addCase(userLogin.fulfilled, (state, { payload }) => {
-        console.log(payload);
         state.loading = false;
         state.user = payload.user;
         state.access_token = payload.access;
@@ -86,7 +75,7 @@ export const authSlice = createSlice({
       })
       .addCase(userLogout.pending, (state) => {
         state.loading = true;
-        state.error = false;
+        state.error = null;
       })
       .addCase(userLogout.fulfilled, (state) => {
         state.loading = false;
@@ -104,6 +93,6 @@ export const authSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { set_data } = authSlice.actions;
+// export const { set_data } = authSlice.actions;
 
 export default authSlice.reducer;
