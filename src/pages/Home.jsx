@@ -1,9 +1,17 @@
-import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { MDBCard } from "mdb-react-ui-kit";
-import { useNavigate } from "react-router";
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+  UserOutlined,
+  VideoCameraOutlined,
+  UploadOutlined,
+  SettingOutlined,
+  BellOutlined,
+} from '@ant-design/icons';
+import { Button, Layout, Menu, Typography, Avatar, Badge, notification } from 'antd';
+import { useNavigate } from 'react-router-dom';
 
-import "./Home.css";
 import { userLogout } from "../redux/authSlice";
 import Dashboard from "../components/Dashboard";
 import Transactions from "../components/Transactions";
@@ -11,11 +19,17 @@ import Expenses from "../components/Expenses";
 import Income from "../components/Income";
 import Settings from "../components/Settings";
 
+import './dashboard.css'; // Import the CSS file
+
+const { Header, Sider, Content } = Layout;
+const { Title } = Typography;
+
 function Home() {
   const auth = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const [collapsed, setCollapsed] = useState(false);
   const [selectedTab, setSelectedTab] = useState("Dashboard");
 
   function handleLogout() {
@@ -23,55 +37,140 @@ function Home() {
     navigate("/");
   }
 
-  function Tab({ selectedTab }) {
-    if (selectedTab === "Dashboard") {
-      return <Dashboard />;
-    } else if (selectedTab === "Transactions") {
-      return <Transactions />;
-    } else if (selectedTab === "Expenses") {
-      return <Expenses />;
-    } else if (selectedTab === "Income") {
-      return <Income />;
-    } else if (selectedTab === "Settings") {
-      return <Settings />;
-    } else {
-      setSelectedTab("Dashboard");
+  function Tab() {
+    switch (selectedTab) {
+      case "Dashboard":
+        return <Dashboard />;
+      case "Transactions":
+        return <Transactions />;
+      case "Expenses":
+        return <Expenses />;
+      case "Income":
+        return <Income />;
+      case "Settings":
+        return <Settings />;
+      default:
+        return <Dashboard />;
     }
   }
+
+  const handleNotificationClick = () => {
+    notification.open({
+      message: 'Notification Title',
+      description: 'This is the content of the notification.',
+      onClick: () => {
+        console.log('Notification Clicked!');
+      },
+    });
+  };
+
   return (
-    <div className="vh-100 vw-100 p-3 d-flex gap-3">
-      <MDBCard className="w-25 h-100 p-3 bg-primary d-flex flex-column justify-content-between">
-        <div className="d-flex flex-column justify-content">
-          <button onClick={() => setSelectedTab("Dashboard")} className="btn">
-            Dashboard
-          </button>
-          <button
-            onClick={() => setSelectedTab("Transactions")}
-            className="btn"
-          >
-            Transactions
-          </button>
-          <button onClick={() => setSelectedTab("Expenses")} className="btn">
-            Expenses
-          </button>
-          <button onClick={() => setSelectedTab("Income")} className="btn">
-            Income
-          </button>
-          <button onClick={() => setSelectedTab("Settings")} className="btn">
-            Settings
-          </button>
+    <Layout style={{ height: '100vh', background: 'transparent' }}>
+      <Sider 
+        trigger={null} 
+        collapsible 
+        collapsed={collapsed}
+        style={{
+          margin: '16px',
+          borderRadius: '8px',
+          background: '#3a8eea' // Sidebar background color
+        }}
+      >
+        <div style={{ padding: '16px', textAlign: 'center' }}>
+          {collapsed ? (
+            <Title level={5} style={{ color: '#ffffff', margin: 0 }}>
+              B
+            </Title>
+          ) : (
+            <Title level={5} style={{ color: '#ffffff', margin: 0 }}>
+              BudgetWise
+            </Title>
+          )}
         </div>
-        <button
-          onClick={handleLogout}
-          className="btn"
-          data-mdb-ripple-init
-          data-mdb-ripple-color="dark"
+        <Menu
+          style={{ backgroundColor: 'transparent' }}
+          theme="dark"
+          mode="inline"
+          defaultSelectedKeys={['1']}
+          selectedKeys={[selectedTab]}
+          items={[
+            {
+              key: 'Dashboard',
+              icon: <UserOutlined style={{ color: '#ffffff' }} />,
+              label: 'Dashboard',
+              onClick: () => setSelectedTab("Dashboard"),
+            },
+            {
+              key: 'Transactions',
+              icon: <VideoCameraOutlined style={{ color: '#ffffff' }} />,
+              label: 'Transactions',
+              onClick: () => setSelectedTab("Transactions"),
+            },
+            {
+              key: 'Expenses',
+              icon: <UploadOutlined style={{ color: '#ffffff' }} />,
+              label: 'Expenses',
+              onClick: () => setSelectedTab("Expenses"),
+            },
+            {
+              key: 'Income',
+              icon: <UserOutlined style={{ color: '#ffffff' }} />,
+              label: 'Income',
+              onClick: () => setSelectedTab("Income"),
+            },
+            {
+              key: 'Settings',
+              icon: <SettingOutlined style={{ color: '#ffffff' }} />,
+              label: 'Settings',
+              onClick: () => setSelectedTab("Settings"),
+            },
+          ]}
+        />
+      </Sider>
+      <Layout style={{ margin: '16px', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0,0,0,0.2)' }}>
+        <Header 
+          style={{ 
+            paddingRight: 30, 
+            background: '#ffffff', // Set Header background to white
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center', 
+            borderRadius: '8px 8px 0 0', // Rounded corners at the top
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)', // Shadow for visual separation
+          }}
         >
-          Logout
-        </button>
-      </MDBCard>
-      <Tab selectedTab={selectedTab} />
-    </div>
+          <Button
+            type="text"
+            icon={collapsed ? <MenuUnfoldOutlined style={{ color: '#3a8eea' }} /> : <MenuFoldOutlined style={{ color: '#3a8eea' }} />}
+            onClick={() => setCollapsed(!collapsed)}
+            style={{
+              fontSize: '16px',
+              width: 64,
+              height: 64,
+              color: '#3a8eea', 
+            }}
+          />
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Badge count={5} style={{ marginRight: '16px' }}>
+              <BellOutlined style={{ fontSize: '20px', color: '#3a8eea' }} onClick={handleNotificationClick} />
+            </Badge>
+            <Avatar style={{ backgroundColor: '#3a8eea', color: '#ffffff' }} icon={<UserOutlined />} />
+            <Button 
+              type="primary" 
+              danger 
+              onClick={handleLogout}
+              style={{ marginLeft: '16px', backgroundColor: '#3a8eea' }} 
+            >
+              Logout
+            </Button>
+          </div>
+        </Header>
+        <Content style={{  backgroundColor: 'transparent',  borderBottomLeftRadius: '20px',  // Apply bottom left radius
+    borderBottomRightRadius: '20px'}}>
+          <Tab />
+        </Content>
+      </Layout>
+    </Layout>
   );
 }
 

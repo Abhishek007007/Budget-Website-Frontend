@@ -1,0 +1,56 @@
+/* dashboard.css */
+body {
+    background: #ffffff; /* Light background */
+    color: #000000; /* Black text for better contrast */
+}
+
+.ant-layout-sider {
+    background: #2f54eb; /* Blue background for sidebar */
+}
+
+.ant-layout-header {
+    background: #2f54eb; /* Blue header background */
+    color: #ffffff; /* White text in the header */
+}
+
+.ant-card {
+    background: rgba(255, 255, 255, 0.8); /* Slightly transparent white background for cards */
+    border: 1px solid #e8e8e8; /* Light border for cards */
+}
+
+.statistic-title {
+    color: #000000; /* Black text for titles */
+}
+
+.ant-progress-circle {
+    color: #2f54eb; /* Blue color for the progress circle */
+}
+
+/* Additional styling for components */
+.ant-menu-item-selected {
+    background: rgba(255, 255, 255, 0.2); /* Light semi-transparent background for selected menu item */
+}
+
+.ant-menu-dark {
+    background: #2f54eb; /* Blue background for menu */
+}
+
+.ant-menu-item {
+    color: #ffffff; /* White text for menu items */
+}
+
+.ant-avatar {
+    background-color: #ffffff; /* Avatar background color */
+    color: #2f54eb; /* Avatar text color */
+}
+
+/* Button styles */
+.ant-btn-primary {
+    background-color: #2f54eb; /* Primary button color */
+    border-color: #2f54eb; /* Primary button border color */
+}
+
+.ant-btn-danger {
+    background-color: #ff4d4f; /* Danger button color */
+    border-color: #ff4d4f; /* Danger button border color */
+}

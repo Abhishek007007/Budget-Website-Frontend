@@ -1,74 +1,64 @@
 import React, { useState } from "react";
-import { MDBInput, MDBBtn, MDBCard, MDBCardBody } from "mdb-react-ui-kit";
+import { Card, Input, Button, Form, Typography, Alert } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { userLogin } from "../redux/authSlice";
 import { useNavigate } from "react-router";
 
-const LoginFormModel = {
-  username: "",
-  password: "",
-};
+const { Title } = Typography;
 
 function LoginPage() {
-  const [form, setForm] = useState(LoginFormModel);
   const auth = useSelector((state) => state.auth);
   const navigate = useNavigate();
-
   const dispatch = useDispatch();
 
-  function handleChange(e) {
-    const newForm = { ...form };
-    newForm[e.target.id] = e.target.value;
-    setForm(newForm);
-  }
-
-  function handleSubmit(e) {
-    e.preventDefault();
-    // try {
-    //   const resp = await axios.post(
-    //     import.meta.env.VITE_BASE_API_URL + "/api/v1/login/",
-    //     form
-    //   );
-    //   console.log(resp);
-    //   Cookies.set("access", resp.data.access);
-    //   Cookies.set("refresh", resp.data.refresh);
-    dispatch(userLogin(form));
-    setForm(LoginFormModel);
-    navigate("/");
+  async function handleSubmit(values) {
+    const resultAction = await dispatch(userLogin(values));
+    if (userLogin.fulfilled.match(resultAction)) {
+      navigate("/");
+    }
   }
 
   return (
-    <div className="vh-100 vw-100 d-flex flex-row align-items-center justify-content-center">
-      <MDBCard>
-        <MDBCardBody>
-          {/* <MDBCardTitle className="d-flex justify-content-center">
-            Login
-          </MDBCardTitle> */}
-          <form action="" className="">
-            <MDBInput
-              className="mb-4"
-              type="text"
-              id="username"
-              label="Username"
-              value={form.username}
-              onChange={handleChange}
-            />
+    <div className="vh-100 vw-100 d-flex align-items-center justify-content-center">
+      <Card style={{ width: 400 }}>
+        <Title level={3} className="d-flex justify-content-center">
+          Login
+        </Title>
+        <Form onFinish={handleSubmit}>
+          <Form.Item
+            label="Username"
+            name="username"
+            rules={[{ required: true, message: "Please input your username!" }]}
+          >
+            <Input />
+          </Form.Item>
 
-            <MDBInput
-              className="mb-4"
-              type="password"
-              id="password"
-              label="Password"
-              value={form.password}
-              onChange={handleChange}
-            />
+          <Form.Item
+            label="Password"
+            name="password"
+            rules={[{ required: true, message: "Please input your password!" }]}
+          >
+            <Input.Password />
+          </Form.Item>
 
-            <MDBBtn type="submit" block onClick={handleSubmit}>
+          {/* Display backend error message if login failed */}
+          {auth.error && (
+            <Alert
+              message="Login Failed"
+              description={auth.error}
+              type="error"
+              showIcon
+              className="mb-3"
+            />
+          )}
+
+          <Form.Item>
+            <Button type="primary" htmlType="submit" block loading={auth.loading}>
               Login
-            </MDBBtn>
-          </form>
-        </MDBCardBody>
-      </MDBCard>
+            </Button>
+          </Form.Item>
+        </Form>
+      </Card>
     </div>
   );
 }

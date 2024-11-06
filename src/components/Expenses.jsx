@@ -3,9 +3,9 @@ import { MDBCard } from "mdb-react-ui-kit";
 
 function Expenses() {
   return (
-    <MDBCard className="w-100 h-100 p-3 ">
+    <div className="w-100 h-100 p-3 ">
       <h1>Expense</h1>
-    </MDBCard>
+    </div>
   );
 }
 
