@@ -14,19 +14,31 @@ function IncomeSource() {
   const [newIncomeSource, setNewIncomeSource] = useState("");
   const [editSourceId, setEditSourceId] = useState(null);
   const [editSourceName, setEditSourceName] = useState("");
+  const [isCustomSource, setIsCustomSource] = useState(false); // Toggle between predefined and custom sources
 
-  // Handle adding a new income source
-  const handleAddIncomeSource = () => {
-    dispatch(postIncomeSource(newIncomeSource));
+  const predefinedIncomeSources = [
+    { name: "Salary 💼", id: "salary" },
+    { name: "Freelance 💻", id: "freelance" },
+    { name: "Investment 💰", id: "investment" },
+    { name: "Rental Income 🏠", id: "rental" },
+    { name: "Business Income 🏢", id: "business" },
+    { name: "Dividend Income 📈", id: "dividend" },
+    { name: "Other 📝", id: "other" },
+  ];
+
+  // Handle adding a new income source (either from predefined or custom)
+  const handleAddIncomeSource = (sourceName) => {
+    dispatch(postIncomeSource(sourceName));
     setNewIncomeSource("");
     setIsAddingSource(false);
+    setIsCustomSource(false); // Reset after adding
   };
-
-
 
   // Handle editing an income source
   const handleEditIncomeSource = () => {
-    // Implement the functionality to update the income source here
+    if (editSourceId && editSourceName) {
+      // Implement the functionality to update the income source here
+    }
   };
 
   // Open the edit modal with the source info
@@ -36,11 +48,10 @@ function IncomeSource() {
   };
 
   // Handle deleting an income source
-  const handleDeleteIncomeSource = async(id) => {
+  const handleDeleteIncomeSource = async (id) => {
     await dispatch(deleteIncomeSource(id));
-    dispatch(getIncomeSourceList())
-    dispatch(getIncomeItemsList())
-    
+    dispatch(getIncomeSourceList());
+    dispatch(getIncomeItemsList());
   };
 
   // Close the edit modal
@@ -54,7 +65,7 @@ function IncomeSource() {
     if (income.incomeSourceList.length === 0) {
       dispatch(getIncomeSourceList());
     }
-  }, [income.getIncomeItemsList]); 
+  }, [income.incomeSourceList]);
 
   return (
     <div className="w-100 h-25 d-flex flex-column">
@@ -69,16 +80,67 @@ function IncomeSource() {
       <Modal
         title="Add Income Source"
         visible={isAddingSource}
-        onOk={handleAddIncomeSource}
         onCancel={() => setIsAddingSource(false)}
-        okText="Add"
-        cancelText="Close"
+        footer={null}
       >
-        <Input
-          placeholder="Enter new income source"
-          value={newIncomeSource}
-          onChange={(e) => setNewIncomeSource(e.target.value)}
-        />
+        <Space direction="vertical" style={{ width: "100%" }}>
+          <Title level={5}>Choose a Predefined Source or Enter a Custom One:</Title>
+          
+          {/* Buttons for Predefined Income Sources */}
+          <Space wrap>
+            {predefinedIncomeSources.map((source) => (
+              <Button
+                key={source.id}
+                type="default"
+                style={{
+                  padding: "10px 20px",
+                  fontSize: "16px",
+                  borderRadius: "8px",
+                  backgroundColor: "#f0f5ff",
+                }}
+                onClick={() => handleAddIncomeSource(source.name)}
+              >
+                {source.name}
+              </Button>
+            ))}
+          </Space>
+          
+          {/* Toggle to enter a custom income source */}
+          <Button
+            type="default"
+            style={{
+              marginTop: "10px",
+              padding: "10px 20px",
+              fontSize: "16px",
+              borderRadius: "8px",
+              backgroundColor: "#f0f5ff",
+            }}
+            onClick={() => setIsCustomSource(!isCustomSource)}
+          >
+            {isCustomSource ? "Select Predefined" : "Enter Custom Source"}
+          </Button>
+          
+          {/* Input for Custom Income Source */}
+          {isCustomSource && (
+            <Input
+              placeholder="Enter custom income source"
+              value={newIncomeSource}
+              onChange={(e) => setNewIncomeSource(e.target.value)}
+              style={{ marginTop: "10px" }}
+            />
+          )}
+          
+          {/* Add Custom Income Source Button */}
+          {isCustomSource && newIncomeSource && (
+            <Button
+              type="primary"
+              style={{ marginTop: "10px" }}
+              onClick={() => handleAddIncomeSource(newIncomeSource)}
+            >
+              Add Custom Source
+            </Button>
+          )}
+        </Space>
       </Modal>
 
       {/* Modal for Editing an Existing Income Source */}
