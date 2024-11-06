@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { postIncomeItems } from "./../redux/incomeSlice";
+import IncomeItemsRow from "./IncomeItemsRow";
 
 function IncomeItems() {
   const income = useSelector((state) => state.income);
@@ -113,19 +114,13 @@ function IncomeItems() {
               <th>amount</th>
               <th>description</th>
               <th>date</th>
+              <th>options</th>
             </tr>
           </thead>
 
           <tbody>
             {income.incomeItemsList.map((val, idx) => {
-              return (
-                <tr key={idx}>
-                  <td>{val.source.source_name}</td>
-                  <td>{val.amount}</td>
-                  <td>{val.description}</td>
-                  <td>{val.date}</td>
-                </tr>
-              );
+              return <IncomeItemsRow val={val} key={idx} />;
             })}
           </tbody>
         </table>

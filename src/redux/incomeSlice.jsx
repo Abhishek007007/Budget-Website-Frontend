@@ -51,7 +51,6 @@ export const editIncomeSource = createAsyncThunk(
           source_name: source_name,
         }
       );
-      console.log(resp);
     } catch (error) {
       return rejectWithValue(error);
     }
@@ -80,6 +79,33 @@ export const postIncomeItems = createAsyncThunk(
       const resp = await axiosPrivate.post("api/v1/finance/income/", form);
 
       return resp.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const deleteIncomeItem = createAsyncThunk(
+  "income/deleteIncomeItem",
+  async (item_id, { rejectWithValue }) => {
+    try {
+      await axiosPrivate.delete(`api/v1/finance/income/${item_id}/`);
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const editIncomeItem = createAsyncThunk(
+  "income/editIncomeItem",
+  async (item, { rejectWithValue }) => {
+    try {
+      const resp = await axiosPrivate.put(`api/v1/finance/income/${item.id}/`, {
+        source: item.source.id,
+        amount: item.amount,
+        description: item.description,
+        date: item.date,
+      });
     } catch (error) {
       return rejectWithValue(error);
     }
@@ -182,6 +208,34 @@ export const incomeSlice = createSlice({
         state.error = false;
       })
       .addCase(postIncomeItems.rejected, (state, { error }) => {
+        state.loading = false;
+        state.error = error.message;
+        state.success = false;
+      })
+      .addCase(deleteIncomeItem.pending, (state) => {
+        state.loading = true;
+        state.error = false;
+      })
+      .addCase(deleteIncomeItem.fulfilled, (state) => {
+        state.loading = false;
+        state.success = true;
+        state.error = false;
+      })
+      .addCase(deleteIncomeItem.rejected, (state, { error }) => {
+        state.loading = false;
+        state.error = error.message;
+        state.success = false;
+      })
+      .addCase(editIncomeItem.pending, (state) => {
+        state.loading = true;
+        state.error = false;
+      })
+      .addCase(editIncomeItem.fulfilled, (state) => {
+        state.loading = false;
+        state.success = true;
+        state.error = false;
+      })
+      .addCase(editIncomeItem.rejected, (state, { error }) => {
         state.loading = false;
         state.error = error.message;
         state.success = false;
