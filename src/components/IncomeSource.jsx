@@ -1,87 +1,72 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { postIncomeSource } from "../redux/incomeSlice";
-import { Modal, Button, Input, Card, Typography, Row, Col, Space } from "antd";
-import { PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
-
-const { Title, Text } = Typography;
+import { postIncomeSource } from "./../redux/incomeSlice";
+import IncomeSourceCard from "./IncomeSourceCard";
 
 function IncomeSource() {
   const income = useSelector((state) => state.income);
   const dispatch = useDispatch();
 
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [newIncomeSource, setNewIncomeSource] = useState("");
-  const [editIndex, setEditIndex] = useState(null);
+  const [isAddingSource, setIsAddingSource] = useState(false);
+  const [newIcomeSource, setNewIncomeSource] = useState("");
 
-  const handleAddIncomeSource = () => {
-    if (newIncomeSource.trim()) {
-      dispatch(postIncomeSource({ source_name: newIncomeSource, editIndex }));
-      setNewIncomeSource("");
-      setIsModalVisible(false);
-      setEditIndex(null);
-    }
-  };
-
-  const openAddModal = () => {
-    setIsModalVisible(true);
+  function handleAddIncomeSource(e) {
+    e.preventDefault();
+    dispatch(postIncomeSource(newIcomeSource));
     setNewIncomeSource("");
-    setEditIndex(null);
-  };
+    setIsAddingSource(false);
+  }
 
-  const openEditModal = (index, sourceName) => {
-    setIsModalVisible(true);
-    setNewIncomeSource(sourceName);
-    setEditIndex(index);
-  };
-
-  const handleDelete = (index) => {
-    // Implement your delete logic here
-    console.log("Deleting income source at index:", index);
-  };
+  useEffect(() => {}, [income.incomeSourceList]);
 
   return (
-    <div className="income-source-container">
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <Title level={3}>Income Sources</Title>
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={openAddModal}
+    <div className="w-100 h-25 d-flex flex-column ">
+      <div className="w-100 d-flex flex-row justify-content-between align-items-center">
+        <h2>Income Sources</h2>
+        <button
+          onClick={() => {
+            setIsAddingSource(true);
+          }}
+          className="btn"
         >
           Add Income Source
-        </Button>
+        </button>
       </div>
-
-      <Row gutter={[16, 16]}>
-        {income.incomeSourceList.map((source, index) => (
-          <Col span={8} key={index}>
-            <Card
-              hoverable
-              actions={[
-                <EditOutlined onClick={() => openEditModal(index, source.source_name)} />,
-                <DeleteOutlined onClick={() => handleDelete(index)} />,
-              ]}
+      {isAddingSource ? (
+        <form>
+          <input
+            type="text"
+            className="form-control"
+            value={newIcomeSource}
+            onChange={(e) => setNewIncomeSource(e.target.value)}
+          />
+          <div>
+            <button type="submit" onClick={handleAddIncomeSource}>
+              Add
+            </button>
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                setNewIncomeSource("");
+                setIsAddingSource(false);
+              }}
             >
-              <Text>{source.source_name}</Text>
-            </Card>
-          </Col>
-        ))}
-      </Row>
-
-      <Modal
-        title={editIndex !== null ? "Edit Income Source" : "Add Income Source"}
-        visible={isModalVisible}
-        onCancel={() => setIsModalVisible(false)}
-        onOk={handleAddIncomeSource}
-        okText={editIndex !== null ? "Update" : "Add"}
-      >
-        <Input
-          placeholder="Enter income source"
-          value={newIncomeSource}
-          onChange={(e) => setNewIncomeSource(e.target.value)}
-        />
-      </Modal>
+              Close
+            </button>
+          </div>
+        </form>
+      ) : (
+        <></>
+      )}
+      {income.incomeSourceList.length > 0 ? (
+        <div className="h-100 overflow-auto">
+          {income.incomeSourceList.map((val, idx) => {
+            return <IncomeSourceCard val={val} key={idx} />;
+          })}
+        </div>
+      ) : (
+        <></>
+      )}
     </div>
   );
 }
