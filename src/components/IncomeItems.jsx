@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { postIncomeItems } from "./../redux/incomeSlice";
+import { postIncomeItems } from "../redux/incomeSlice";
+import { Button, Input, Modal, Select, Table, Form } from "antd";
 
 function IncomeItems() {
   const income = useSelector((state) => state.income);
@@ -33,104 +34,106 @@ function IncomeItems() {
     setIsAddingItem(false);
   }
 
+  const columns = [
+    {
+      title: "Source",
+      dataIndex: "source",
+      key: "source",
+      render: (text) => text.source_name,
+    },
+    {
+      title: "Amount",
+      dataIndex: "amount",
+      key: "amount",
+    },
+    {
+      title: "Description",
+      dataIndex: "description",
+      key: "description",
+    },
+    {
+      title: "Date",
+      dataIndex: "date",
+      key: "date",
+    },
+  ];
+
   return (
     <div className="w-100 h-100 d-flex flex-column">
       <div className="w-100 d-flex flex-row justify-content-between align-items-center">
         <h2>Income Items</h2>
-        <button
+        <Button
+          type="primary"
           onClick={() => {
             setIsAddingItem(true);
           }}
-          className="btn"
         >
           Add Income Item
-        </button>
+        </Button>
       </div>
-      {isAddingItem ? (
-        <form>
-          <select
-            className="form-control"
-            name="source"
-            value={form.source}
-            onChange={handleChange}
-            required
-          >
-            {income.incomeSourceList.map((source, idx) => {
-              return (
-                <option key={idx} value={idx}>
-                  {source.source_name}
-                </option>
-              );
-            })}
-          </select>
-          <input
-            type="text"
-            className="form-control"
-            name="amount"
-            placeholder="amount"
-            value={form.amount}
-            onChange={handleChange}
-          />
-          <input
-            type="text"
-            className="form-control"
-            name="description"
-            placeholder="description"
-            value={form.description}
-            onChange={handleChange}
-          />
-          <input
-            type="date"
-            className="form-control"
-            name="date"
-            placeholder="date"
-            value={form.date}
-            onChange={handleChange}
-          />
-          <div>
-            <button type="submit" onClick={handleSubmit}>
-              Add
-            </button>
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                setForm(ItemForm);
-                setIsAddingItem(false);
-              }}
-            >
-              Close
-            </button>
-          </div>
-        </form>
-      ) : (
-        <></>
-      )}
-      {income.incomeItemsList.length > 0 ? (
-        <table>
-          <thead>
-            <tr>
-              <th>source</th>
-              <th>amount</th>
-              <th>description</th>
-              <th>date</th>
-            </tr>
-          </thead>
 
-          <tbody>
-            {income.incomeItemsList.map((val, idx) => {
-              return (
-                <tr key={idx}>
-                  <td>{val.source.source_name}</td>
-                  <td>{val.amount}</td>
-                  <td>{val.description}</td>
-                  <td>{val.date}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      ) : (
-        <></>
+      {/* Modal for Adding a New Income Item */}
+      <Modal
+        title="Add Income Item"
+        visible={isAddingItem}
+        onCancel={() => setIsAddingItem(false)}
+        onOk={handleSubmit}
+        okText="Add"
+        cancelText="Close"
+      >
+        <Form layout="vertical">
+          <Form.Item label="Income Source" required>
+            <Select
+              name="source"
+              value={form.source}
+              onChange={(value) => setForm({ ...form, source: value })}
+            >
+              {income.incomeSourceList.map((source, idx) => (
+                <Select.Option key={idx} value={idx}>
+                  {source.source_name}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+
+          <Form.Item label="Amount" required>
+            <Input
+              type="text"
+              name="amount"
+              value={form.amount}
+              onChange={handleChange}
+              placeholder="Amount"
+            />
+          </Form.Item>
+
+          <Form.Item label="Description">
+            <Input
+              type="text"
+              name="description"
+              value={form.description}
+              onChange={handleChange}
+              placeholder="Description"
+            />
+          </Form.Item>
+
+          <Form.Item label="Date">
+            <Input
+              type="date"
+              name="date"
+              value={form.date}
+              onChange={handleChange}
+            />
+          </Form.Item>
+        </Form>
+      </Modal>
+
+      {/* Table for displaying Income Items */}
+      {income.incomeItemsList.length > 0 && (
+        <Table
+          columns={columns}
+          dataSource={income.incomeItemsList}
+          rowKey="id"
+        />
       )}
     </div>
   );

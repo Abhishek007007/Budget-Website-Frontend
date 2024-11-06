@@ -7,6 +7,7 @@ import {
 } from "./../redux/incomeSlice";
 import IncomeSource from "./IncomeSource";
 import IncomeItems from "./IncomeItems";
+import { Divider } from "antd";
 
 function Income() {
   const income = useSelector((state) => state.income);
@@ -23,7 +24,8 @@ function Income() {
     <MDBCard className="w-100 h-100 p-3 d-flex flex-column overflow-hidden">
       <div className="w-100 h-100 d-flex flex-column">
         <IncomeSource className=" overflow-auto" />
-        {/* <IncomeItems /> */}
+        <Divider/>
+        <IncomeItems />
       </div>
     </MDBCard>
   );
