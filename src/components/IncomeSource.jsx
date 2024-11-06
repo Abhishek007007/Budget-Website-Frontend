@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { postIncomeSource } from "./../redux/incomeSlice";
+import IncomeSourceCard from "./IncomeSourceCard";
 
 function IncomeSource() {
   const income = useSelector((state) => state.income);
@@ -60,7 +61,7 @@ function IncomeSource() {
       {income.incomeSourceList.length > 0 ? (
         <div className="h-100 overflow-auto">
           {income.incomeSourceList.map((val, idx) => {
-            return <div key={idx}>{val.source_name}</div>;
+            return <IncomeSourceCard val={val} key={idx} />;
           })}
         </div>
       ) : (
