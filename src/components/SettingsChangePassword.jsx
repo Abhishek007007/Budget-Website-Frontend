@@ -1,5 +1,5 @@
-import axios from "axios";
 import React, { useState } from "react";
+import { Input, Button, Form, Alert } from "antd";
 import axiosPrivate from "./../axiosInterceptors/axiosPrivate";
 
 const passwordChangeForm = {
@@ -11,8 +11,8 @@ const passwordChangeForm = {
 function SettingsChangePassword() {
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [form, setForm] = useState(passwordChangeForm);
-
   const [errors, setErrors] = useState([]);
+  const [successMessage, setSuccessMessage] = useState(""); // New state for success message
 
   async function handleChangePassword() {
     const newErrors = [];
@@ -32,14 +32,16 @@ function SettingsChangePassword() {
           old_password: form.old_password,
           new_password: form.new_password,
         });
-        alert(resp.data.message);
-        setErrors([]);
-        setForm(passwordChangeForm);
-        setIsChangingPassword(false);
+        setSuccessMessage("Password changed successfully!"); // Set success message
+        setErrors([]); 
+        setForm(passwordChangeForm); 
       } catch (error) {
+        const newErrorMessages = [];
         for (const key of Object.keys(error.response.data)) {
-          newErrors.push(`${key} : ${error.response.data[key]}`);
+          newErrorMessages.push(`${error.response.data[key]}`);
         }
+        setErrors(newErrorMessages); 
+        setSuccessMessage(""); 
       }
     }
     setErrors(newErrors);
@@ -50,80 +52,91 @@ function SettingsChangePassword() {
     newForm[e.target.name] = e.target.value;
     setForm(newForm);
   }
+
   return (
     <>
       {isChangingPassword ? (
-        <form className="w-100 d-flex flex-column gap-2">
-          <div className="w-100 d-flex flex-row justify-content-evenly gap-2">
-            <input
+        <Form layout="vertical" className="w-100">
+          <Form.Item label="Old Password">
+            <Input
               type="password"
               onChange={handleChange}
-              className="form-control"
               name="old_password"
               value={form.old_password}
               placeholder="Old Password"
-            ></input>
-            <input
+            />
+          </Form.Item>
+          <Form.Item label="New Password">
+            <Input
               type="password"
               onChange={handleChange}
-              className="form-control"
               name="new_password"
               value={form.new_password}
               placeholder="New Password"
-            ></input>
-            <input
+            />
+          </Form.Item>
+          <Form.Item label="Confirm New Password">
+            <Input
               type="password"
               onChange={handleChange}
-              className="form-control"
               name="new_password1"
               value={form.new_password1}
               placeholder="Confirm New Password"
-            ></input>
-          </div>
-          {errors.length > 0 ? (
-            <div className="w-100 d-flex flex-row justify-content-center">
-              <ul>
-                {errors.map((val, idx) => {
-                  return <ol key={idx}>{val}</ol>;
-                })}
-              </ul>
-            </div>
-          ) : (
-            <></>
+            />
+          </Form.Item>
+
+          {/* Show error alert if there are errors */}
+          {errors.length > 0 && (
+            <Alert
+              message={errors.map((val, idx) => <div key={idx}>{val}</div>)}
+              type="error"
+              showIcon
+              style={{ marginBottom: "16px" }}
+            />
           )}
 
-          <div className="w-100 d-flex flex-row justify-content-center">
-            <div className="d-flex flex-row justify-content-evenly gap-2">
-              <button
-                onClick={handleChangePassword}
-                className="btn btn-primary"
-              >
-                Confirm
-              </button>
-              <button
-                onClick={() => {
-                  setIsChangingPassword(false);
-                  setForm(passwordChangeForm);
-                  setErrors([]);
-                }}
-                className="btn btn-danger"
-              >
-                Cancel
-              </button>
-            </div>
+          {/* Show success alert if password change is successful */}
+          {successMessage && (
+            <Alert
+              message={successMessage}
+              type="success"
+              showIcon
+              style={{ marginBottom: "16px" }}
+            />
+          )}
+
+          <div className="w-100 d-flex flex-row justify-content-center gap-2">
+            <Button
+              type="primary"
+              onClick={handleChangePassword}
+            >
+              Confirm
+            </Button>
+            <Button
+              danger
+              onClick={() => {
+                setIsChangingPassword(false);
+                setForm(passwordChangeForm);
+                setErrors([]);
+                setSuccessMessage(""); // Clear success message on cancel
+              }}
+            >
+              Cancel
+            </Button>
           </div>
-        </form>
+        </Form>
       ) : (
         <div className="w-100 d-flex flex-row justify-content-between">
           <span className="align-content-center">
             Do you want to change your password?
           </span>
-          <button
+          <Button
+            type="dashed"
+            danger
             onClick={() => setIsChangingPassword(true)}
-            className="btn btn-outline-danger"
           >
             Change Password
-          </button>
+          </Button>
         </div>
       )}
     </>

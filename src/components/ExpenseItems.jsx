@@ -1,14 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { postIncomeItems, deleteIncomeItem, editIncomeItem, getIncomeItemsList } from "../redux/incomeSlice";
+import {
+  postExpenseItem,
+  deleteExpenseItem,
+  editExpenseItem,
+  getExpenseItemsList,
+} from "../redux/expenseSlice";
 import { Button, Input, Modal, Select, Table, Form } from "antd";
 
-function IncomeItems() {
-  const income = useSelector((state) => state.income);
+function ExpenseItems() {
+  const expense = useSelector((state) => state.expense);
   const dispatch = useDispatch();
 
   const ItemForm = {
-    source: 0,
+    category: 0,
     amount: "",
     description: "",
     date: "",
@@ -19,7 +24,9 @@ function IncomeItems() {
   const [isEditingItem, setIsEditingItem] = useState(false);
   const [currentEditingItem, setCurrentEditingItem] = useState(null);
 
-  useEffect(() => {}, [income.incomeItemsList]);
+  useEffect(() => {
+    dispatch(getExpenseItemsList());
+  }, [dispatch]);
 
   function handleChange(e) {
     const newForm = { ...form };
@@ -31,44 +38,45 @@ function IncomeItems() {
     e.preventDefault();
 
     const newForm = { ...form };
-    newForm.source = income.incomeSourceList[form.source].id;
-    dispatch(postIncomeItems(newForm));
+    newForm.category = expense.expenseCategoryList[form.category].id;
+    dispatch(postExpenseItem(newForm));
     setForm(ItemForm);
     setIsAddingItem(false);
   }
 
   async function handleDelete(itemId) {
-    await dispatch(deleteIncomeItem(itemId));
-    dispatch(getIncomeItemsList())
+    await dispatch(deleteExpenseItem(itemId));
+    dispatch(getExpenseItemsList());
   }
 
   function handleEdit(item) {
     setCurrentEditingItem(item);
     setForm({
-      source: income.incomeSourceList.findIndex((source) => source.id === item.source.id),
+      category: expense.expenseCategoryList.findIndex(
+        (category) => category.id === item.category.id
+      ),
       amount: item.amount,
       description: item.description,
       date: item.date,
     });
     setIsEditingItem(true);
-    
   }
 
   async function handleEditSubmit() {
     const updatedItem = { ...form };
-    updatedItem.source = income.incomeSourceList[form.source];
-    await dispatch(editIncomeItem({ id: currentEditingItem.id, ...updatedItem }));
-    dispatch(getIncomeItemsList())
+    updatedItem.category = expense.expenseCategoryList[form.category];
+    await dispatch(editExpenseItem({ id: currentEditingItem.id, ...updatedItem }));
+    dispatch(getExpenseItemsList());
     setIsEditingItem(false);
     setCurrentEditingItem(null);
   }
 
   const columns = [
     {
-      title: "Source",
-      dataIndex: "source",
-      key: "source",
-      render: (text) => text.source_name,
+      title: "Category",
+      dataIndex: "category",
+      key: "category",
+      render: (text) => text.name,
     },
     {
       title: "Amount",
@@ -104,20 +112,20 @@ function IncomeItems() {
   return (
     <div className="w-100 h-100 d-flex flex-column">
       <div className="w-100 d-flex flex-row justify-content-between align-items-center">
-        <h2>Income Items</h2>
+        <h2>Expense Items</h2>
         <Button
           type="primary"
           onClick={() => {
             setIsAddingItem(true);
           }}
         >
-          Add Income Item
+          Add Expense Item
         </Button>
       </div>
 
-      {/* Modal for Adding a New Income Item */}
+      {/* Modal for Adding a New Expense Item */}
       <Modal
-        title="Add Income Item"
+        title="Add Expense Item"
         visible={isAddingItem}
         onCancel={() => setIsAddingItem(false)}
         onOk={handleSubmit}
@@ -125,15 +133,15 @@ function IncomeItems() {
         cancelText="Close"
       >
         <Form layout="vertical">
-          <Form.Item label="Income Source" required>
+          <Form.Item label="Expense Category" required>
             <Select
-              name="source"
-              value={form.source}
-              onChange={(value) => setForm({ ...form, source: value })}
+              name="category"
+              value={form.category}
+              onChange={(value) => setForm({ ...form, category: value })}
             >
-              {income.incomeSourceList.map((source, idx) => (
+              {expense.expenseCategoryList.map((category, idx) => (
                 <Select.Option key={idx} value={idx}>
-                  {source.source_name}
+                  {category.name}
                 </Select.Option>
               ))}
             </Select>
@@ -170,9 +178,9 @@ function IncomeItems() {
         </Form>
       </Modal>
 
-      {/* Modal for Editing an Income Item */}
+      {/* Modal for Editing an Expense Item */}
       <Modal
-        title="Edit Income Item"
+        title="Edit Expense Item"
         visible={isEditingItem}
         onCancel={() => setIsEditingItem(false)}
         onOk={handleEditSubmit}
@@ -180,15 +188,15 @@ function IncomeItems() {
         cancelText="Close"
       >
         <Form layout="vertical">
-          <Form.Item label="Income Source" required>
+          <Form.Item label="Expense Category" required>
             <Select
-              name="source"
-              value={form.source}
-              onChange={(value) => setForm({ ...form, source: value })}
+              name="category"
+              value={form.category}
+              onChange={(value) => setForm({ ...form, category: value })}
             >
-              {income.incomeSourceList.map((source, idx) => (
+              {expense.expenseCategoryList.map((category, idx) => (
                 <Select.Option key={idx} value={idx}>
-                  {source.source_name}
+                  {category.name}
                 </Select.Option>
               ))}
             </Select>
@@ -225,16 +233,12 @@ function IncomeItems() {
         </Form>
       </Modal>
 
-      {/* Table for displaying Income Items */}
-      {income.incomeItemsList.length > 0 && (
-        <Table
-          columns={columns}
-          dataSource={income.incomeItemsList}
-          rowKey="id"
-        />
+      {/* Table for displaying Expense Items */}
+      {expense.expenseItemsList.length > 0 && (
+        <Table columns={columns} dataSource={expense.expenseItemsList} rowKey="id" />
       )}
     </div>
   );
 }
 
-export default IncomeItems;
+export default ExpenseItems;

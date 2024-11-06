@@ -21,11 +21,12 @@ export const userLogin = createAsyncThunk(
       Cookies.set("user", JSON.stringify(resp.data.user));
       return resp.data;
     } catch (error) {
-      console.log(error);
-      return rejectWithValue(error.message);
+      const errorMessage = error.response?.data?.detail || "Login failed";
+      return rejectWithValue(errorMessage);
     }
   }
 );
+
 
 export const userLogout = createAsyncThunk(
   "auth/logout",
