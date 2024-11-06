@@ -6,13 +6,13 @@ import {
   getIncomeItemsList,
 } from "./../redux/incomeSlice";
 import IncomeSource from "./IncomeSource";
+import IncomeItems from "./IncomeItems";
 
 function Income() {
   const income = useSelector((state) => state.income);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log(1);
     if (!income.success && income.error === null) {
       dispatch(getIncomeSourceList());
       dispatch(getIncomeItemsList());
@@ -25,31 +25,7 @@ function Income() {
 
       <div className="w-100 h-100 d-flex flex-column">
         <IncomeSource className=" overflow-auto" />
-        <div className="w-100 h-100">
-          <h2>Income Items</h2>
-          {income.incomeItemsList.length > 0 ? (
-            <table>
-              <tr>
-                <th>source</th>
-                <th>amount</th>
-                <th>description</th>
-                <th>date</th>
-              </tr>
-              {income.incomeItemsList.map((val, idx) => {
-                return (
-                  <tr key={idx}>
-                    <td>{val.source}</td>
-                    <td>{val.amount}</td>
-                    <td>{val.description}</td>
-                    <td>{val.date}</td>
-                  </tr>
-                );
-              })}
-            </table>
-          ) : (
-            <></>
-          )}
-        </div>
+        <IncomeItems />
       </div>
     </MDBCard>
   );

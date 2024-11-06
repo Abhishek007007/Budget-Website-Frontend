@@ -40,7 +40,6 @@ function SettingsChangePassword() {
         for (const key of Object.keys(error.response.data)) {
           newErrors.push(`${key} : ${error.response.data[key]}`);
         }
-        newErrors.push(JSON.stringify());
       }
     }
     setErrors(newErrors);
