@@ -65,15 +65,16 @@ function Home() {
   };
 
   return (
-    <Layout style={{ height: '100vh', background: 'transparent' }}>
-      <Sider 
-        trigger={null} 
-        collapsible 
+    <Layout style={{ height: '100vh', background: 'transparent', overflowY: "none" }}>
+      <Sider
+        trigger={null}
+        collapsible
         collapsed={collapsed}
         style={{
+          background: '#3a8eea',
           margin: '16px',
           borderRadius: '8px',
-          background: '#3a8eea' // Sidebar background color
+          zIndex: 10,
         }}
       >
         <div style={{ padding: '16px', textAlign: 'center' }}>
@@ -127,16 +128,14 @@ function Home() {
           ]}
         />
       </Sider>
-      <Layout style={{ margin: '16px', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0,0,0,0.2)' }}>
-        <Header 
-          style={{ 
-            paddingRight: 30, 
-            background: '#ffffff', // Set Header background to white
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center', 
-            borderRadius: '8px 8px 0 0', // Rounded corners at the top
-            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)', // Shadow for visual separation
+      <Layout style={{ marginTop: 16, marginRight: 16 }}>
+        <Header
+          style={{
+            background: '#f0f5ff',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            borderRadius: '8px',
           }}
         >
           <Button
@@ -147,7 +146,7 @@ function Home() {
               fontSize: '16px',
               width: 64,
               height: 64,
-              color: '#3a8eea', 
+              color: '#3a8eea',
             }}
           />
           <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -155,18 +154,25 @@ function Home() {
               <BellOutlined style={{ fontSize: '20px', color: '#3a8eea' }} onClick={handleNotificationClick} />
             </Badge>
             <Avatar style={{ backgroundColor: '#3a8eea', color: '#ffffff' }} icon={<UserOutlined />} />
-            <Button 
-              type="primary" 
-              danger 
+            <Button
+              type="primary"
+              danger
               onClick={handleLogout}
-              style={{ marginLeft: '16px', backgroundColor: '#3a8eea' }} 
+              style={{ marginLeft: '16px', backgroundColor: '#f5222d' }}
             >
               Logout
             </Button>
           </div>
         </Header>
-        <Content style={{  backgroundColor: 'transparent',  borderBottomLeftRadius: '20px',  // Apply bottom left radius
-    borderBottomRightRadius: '20px'}}>
+        <Content
+          style={{
+            backgroundColor: '#ffffff',
+            overflowY: 'auto',
+            height: 'calc(100vh - 64px)',
+            borderBottomLeftRadius: '20px',
+            borderBottomRightRadius: "20px",
+          }}
+        >
           <Tab />
         </Content>
       </Layout>

@@ -21,11 +21,9 @@ function Income() {
 
   return (
     <MDBCard className="w-100 h-100 p-3 d-flex flex-column overflow-hidden">
-      <h1>Income</h1>
-
       <div className="w-100 h-100 d-flex flex-column">
         <IncomeSource className=" overflow-auto" />
-        <IncomeItems />
+        {/* <IncomeItems /> */}
       </div>
     </MDBCard>
   );

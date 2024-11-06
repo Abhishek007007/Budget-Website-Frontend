@@ -1,7 +1,6 @@
 /* dashboard.css */
-body {
-    background: #ffffff; /* Light background */
-    color: #000000; /* Black text for better contrast */
+body { /* Light background */
+    color: #000000; 
 }
 
 .ant-layout-sider {
@@ -15,7 +14,7 @@ body {
 
 .ant-card {
     background: rgba(255, 255, 255, 0.8); /* Slightly transparent white background for cards */
-    border: 1px solid #e8e8e8; /* Light border for cards */
+    border: 1px solid #ffffff; /* Light border for cards */
 }
 
 .statistic-title {
@@ -28,7 +27,7 @@ body {
 
 /* Additional styling for components */
 .ant-menu-item-selected {
-    background: rgba(255, 255, 255, 0.2); /* Light semi-transparent background for selected menu item */
+    background: rgba(244, 244, 244, 0.275); /* Light semi-transparent background for selected menu item */
 }
 
 .ant-menu-dark {
@@ -45,10 +44,7 @@ body {
 }
 
 /* Button styles */
-.ant-btn-primary {
-    background-color: #2f54eb; /* Primary button color */
-    border-color: #2f54eb; /* Primary button border color */
-}
+
 
 .ant-btn-danger {
     background-color: #ff4d4f; /* Danger button color */

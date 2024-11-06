@@ -30,7 +30,7 @@ const RegistrationPage = () => {
   };
 
   return (
-    <div className="vh-100 vw-100 d-flex align-items-center justify-content-center">
+    <div className="vh-100 vw-100 d-flex align-items-center justify-content-around">
       <Form
         name="register"
         initialValues={{ remember: true }}
@@ -100,6 +100,11 @@ const RegistrationPage = () => {
           Already have an account? <Link to="/login">Log in!</Link>
         </Form.Item>
       </Form>
+      <img
+        src="https://firebasestorage.googleapis.com/v0/b/gadget-a7f0c.appspot.com/o/ui%2Fundraw_investing_re_bov7.svg?alt=media&token=9bc1b60c-8e34-4cc6-b208-82e045e0784e"
+        alt="Password Illustration"
+        style={{ width: '100%', maxWidth: '400px' }} // Optional: Adjust image size
+      />
     </div>
   );
 };

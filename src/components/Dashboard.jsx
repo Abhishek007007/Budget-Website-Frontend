@@ -1,102 +1,267 @@
-import { MDBCard } from "mdb-react-ui-kit";
-import React from "react";
-import { useSelector } from "react-redux";
-import { ArrowDownOutlined, ArrowUpOutlined, DollarOutlined } from '@ant-design/icons';
-import { Statistic, Typography, Card, Col, Row, Progress } from 'antd';
+import React, { useState } from 'react';
+import { Row, Col, Card, Table, Typography, Tag } from 'antd';
+import ApexCharts from 'react-apexcharts'; // Import the ApexCharts component
+import { useSelector } from 'react-redux';
+
+const { Title } = Typography;
 
 function Dashboard() {
-  const { Title } = Typography;
   const auth = useSelector((state) => state.auth);
 
-  // Sample data; replace these with your actual state values
-  const totalIncome = 5000; // Replace with actual total income in Rupees
-  const totalExpense = 2000; // Replace with actual total expense in Rupees
-  const totalSavings = totalIncome - totalExpense; // Calculate savings
-  const totalBalance = totalIncome; // Assuming balance equals total income for this example
+  // Sample data for the chart: Monthly Income and Expense
+  const [chartData, setChartData] = useState({
+    series: [{
+      name: 'Income',
+      data: [1000, 1500, 1200, 1600, 1800, 2200, 2500, 2700, 2900, 3100, 3500, 3800] // Income data for each month
+    }, {
+      name: 'Expense',
+      data: [800, 1200, 1000, 1300, 1500, 1600, 1800, 1900, 2100, 2200, 2400, 2500] // Expense data for each month
+    }],
+    options: {
+      chart: {
+        id: 'income-expense-chart',
+        height: 250, // Smaller chart height
+        type: 'line',
+        zoom: {
+          enabled: false
+        },
+      },
+      stroke: {
+        width: 2,
+        curve: 'smooth'
+      },
+      title: {
+        text: 'Monthly Income and Expense',
+        align: 'center',
+        style: {
+          fontWeight: 'bold',
+          fontSize: '14px'
+        }
+      },
+      xaxis: {
+        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        title: {
+          text: 'Months'
+        }
+      },
+      yaxis: {
+        title: {
+          text: 'Amount (₹)'
+        }
+      },
+      markers: {
+        size: 4
+      },
+      tooltip: {
+        shared: true,
+        intersect: false
+      },
+      colors: ['#1890ff', '#ff4d4f'], // Ant Design primary and error colors
+    }
+  });
+
+  // Donut Chart Data for Financial Goals
+  const [donutChartData, setDonutChartData] = useState({
+    series: [40, 30, 30], // Example goal completion (e.g., 40% achieved, 30% remaining, 30% in progress)
+    options: {
+      chart: {
+        id: 'financial-goals-donut-chart',
+        type: 'donut',
+        width: '100%',
+      },
+      labels: ['Achieved', 'Remaining', 'In Progress'],
+      title: {
+        text: 'Financial Goals',
+        align: 'center',
+        style: {
+          fontWeight: 'bold',
+          fontSize: '14px'
+        }
+      },
+      colors: ['#52c41a', '#fa8c16', '#1890ff'], // Ant Design success, warning, and primary colors
+      responsive: [{
+        breakpoint: 480,
+        options: {
+          chart: {
+            width: '100%'
+          },
+          legend: {
+            position: 'bottom'
+          }
+        }
+      }]
+    }
+  });
+
+  // Sample data for the transactions table
+  const transactions = [
+    {
+      key: '1',
+      description: 'Salary',
+      amount: '₹5000',
+      type: 'Income'
+    },
+    {
+      key: '2',
+      description: 'Rent Payment',
+      amount: '₹1500',
+      type: 'Expense'
+    },
+    {
+      key: '3',
+      description: 'Grocery Shopping',
+      amount: '₹500',
+      type: 'Expense'
+    },
+    {
+      key: '4',
+      description: 'Freelance Work',
+      amount: '₹1000',
+      type: 'Income'
+    },
+  ];
+
+  // Columns for the transactions table
+  const columns = [
+    {
+      title: 'Description',
+      dataIndex: 'description',
+      key: 'description',
+    },
+    {
+      title: 'Amount',
+      dataIndex: 'amount',
+      key: 'amount',
+    },
+    {
+      title: 'Type',
+      dataIndex: 'type',
+      key: 'type',
+      render: (type) => (
+        <Tag color={type === 'Income' ? 'blue' : 'red'}>
+          {type}
+        </Tag>
+      ),
+    },
+  ];
 
   return (
-    <div className="w-100 h-100 p-3" style={{ backgroundColor: '#ffffff' }}> {/* Light background for the entire card */}
-      <Row gutter={16}>
-        <Col span={6}>
-          <Card 
-            bordered={false} 
-            style={{ 
-              backgroundColor: '#f6ffed', 
-              borderRadius: '20px', 
-              border : '#f6ffed',
-              color: '#000000' 
-            }} 
-          >
-            <Statistic
-              title={<span style={{ fontWeight: 'bold', color: '#000000' }}>Total Income</span>}
-              value={totalIncome}
-              precision={2}
-              valueStyle={{ color: '#52c41a', fontWeight: 'bold' }}
-              suffix="₹"
-            />
-          </Card>
-        </Col>
-        <Col span={6}>
-          <Card 
-            bordered={false} 
-            style={{ 
-              backgroundColor: '#fff1f0', 
-              borderRadius: '20px', 
-              color: '#000000',
-              border: '#fff1f0'
-            }} 
-          >
-            <Statistic
-              title={<span style={{ fontWeight: 'bold', color: '#000000' }}>Total Expense</span>}
-              value={totalExpense}
-              precision={2}
-              valueStyle={{ color: '#cf1322', fontWeight: 'bold' }}
-              suffix="₹"
-            />
-          </Card>
-        </Col>
-        <Col span={6}>
-          <Card 
-            bordered={false} 
-            style={{ 
-              backgroundColor: '#e6f4ff', 
-              border: '#e6f4ff',
-              borderRadius: '20px', 
-              color: '#000000' 
-            }} 
-          >
-            <Statistic
-              title={<span style={{ fontWeight: 'bold', color: '#000000' }}>Total Savings</span>}
-              value={totalSavings}
-              precision={2}
-              valueStyle={{ color: '#2f54eb', fontWeight: 'bold' }}
-              suffix="₹"
-            />
-          </Card>
-        </Col>
-        <Col span={6}>
-          <Card 
-            bordered={false} 
-            style={{ 
-              backgroundColor: '#feffe6', 
-              borderRadius: '20px', 
-              color: '#000000' ,
-              border : '#feffe6'
-            }} 
-          >
-            <Statistic
-              title={<span style={{ fontWeight: 'bold', color: '#000000' }}>Total Balance</span>}
-              value={totalBalance}
-              precision={2}
-              valueStyle={{ color: '#fadb14', fontWeight: 'bold' }}
-              suffix="₹"
-            />
-          </Card>
-        </Col>
-      </Row>
-      <Row gutter={12}>
-        <Progress strokeLinecap="butt" type="circle" percent={75} />
-      </Row>
+    <div style={{ backgroundColor: '#ffffff', height: '100vh' }}>
+      <div className="w-100 p-3">
+        <Row gutter={16}>
+          <Col span={6}>
+            <Card
+              title="Total Income"
+              bordered={false}
+              style={{
+                borderRadius: '20px',
+                backgroundColor: '#e6f7ff', 
+                color: '#1890ff', 
+              }}
+            >
+              <p style={{ fontSize: '20px', fontWeight: 'bold' }}>₹5000</p>
+            </Card>
+          </Col>
+          <Col span={6}>
+            <Card
+              title="Total Expense"
+              bordered={false}
+              style={{
+                borderRadius: '20px',
+                backgroundColor: '#fff2e8', // Light red for Expense
+                color: '#ff4d4f', // Error color (Ant Design Light)
+              }}
+            >
+              <p style={{ fontSize: '20px', fontWeight: 'bold' }}>₹2000</p>
+            </Card>
+          </Col>
+          <Col span={6}>
+            <Card
+              title="Total Savings"
+              bordered={false}
+              style={{
+                borderRadius: '20px',
+                backgroundColor: '#f6ffed', // Light green for Savings
+                color: '#52c41a', // Success color (Ant Design Light)
+              }}
+            >
+              <p style={{ fontSize: '20px', fontWeight: 'bold' }}>₹3000</p>
+            </Card>
+          </Col>
+          <Col span={6}>
+            <Card
+              title="Total Balance"
+              bordered={false}
+              style={{
+                borderRadius: '20px',
+                backgroundColor: '#fff7e6', // Light yellow for Balance
+                color: '#faad14', // Warning color (Ant Design Light)
+              }}
+            >
+              <p style={{ fontSize: '20px', fontWeight: 'bold' }}>₹5000</p>
+            </Card>
+          </Col>
+        </Row>
+
+        {/* Second Row - Charts and Table in one row */}
+        <Row gutter={16} style={{ marginTop: '20px' }}>
+          {/* Left column - Charts (one below the other) */}
+          <Col span={16}>
+            <Card
+              title="Monthly Income and Expense"
+              bordered={false}
+              style={{
+                borderRadius: '20px',
+                boxShadow: '0 2px 6px rgba(0, 0, 0, 0.1)',
+                marginBottom: '20px',
+              }}
+            >
+              <ApexCharts
+                options={chartData.options}
+                series={chartData.series}
+                type="line"
+                height={250} // Chart height is fixed, no scrolling
+              />
+            </Card>
+
+            <Card
+              title="Financial Goals"
+              bordered={false}
+              style={{
+                borderRadius: '20px',
+                boxShadow: '0 2px 6px rgba(0, 0, 0, 0.1)',
+              }}
+            >
+              <ApexCharts
+                options={donutChartData.options}
+                series={donutChartData.series}
+                type="donut"
+                height={250} // Chart height is fixed, no scrolling
+              />
+            </Card>
+          </Col>
+
+          {/* Right column - Transactions Table */}
+          <Col span={8}>
+            <Card
+              title="Recent Transactions"
+              bordered={false}
+              style={{
+                borderRadius: '20px',
+                boxShadow: '0 2px 6px rgba(0, 0, 0, 0.1)',
+                backgroundColor: "#ffffff"
+              }}
+            >
+              <Table
+                columns={columns}
+                dataSource={transactions}
+                pagination={false}
+                rowKey="key"
+              />
+            </Card>
+          </Col>
+        </Row>
+      </div>
     </div>
   );
 }
