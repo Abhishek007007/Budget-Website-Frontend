@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Input, Modal, Typography, Card, Space } from "antd";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
-import { postIncomeSource, deleteIncomeSource, getIncomeSourceList } from "../redux/incomeSlice";
+import { postIncomeSource, deleteIncomeSource, getIncomeSourceList, getIncomeItemsList } from "../redux/incomeSlice";
 
 const { Title } = Typography;
 
@@ -22,9 +22,11 @@ function IncomeSource() {
     setIsAddingSource(false);
   };
 
+
+
   // Handle editing an income source
   const handleEditIncomeSource = () => {
-    console.log(""); // Add the functionality to handle income source editing
+    // Implement the functionality to update the income source here
   };
 
   // Open the edit modal with the source info
@@ -34,8 +36,11 @@ function IncomeSource() {
   };
 
   // Handle deleting an income source
-  const handleDeleteIncomeSource = (id) => {
-    dispatch(deleteIncomeSource(id));
+  const handleDeleteIncomeSource = async(id) => {
+    await dispatch(deleteIncomeSource(id));
+    dispatch(getIncomeSourceList())
+    dispatch(getIncomeItemsList())
+    
   };
 
   // Close the edit modal
@@ -44,17 +49,12 @@ function IncomeSource() {
     setEditSourceName("");
   };
 
-  // Fetch the income sources when the component mounts or when the list changes
+  // Fetch the income sources when the component mounts
   useEffect(() => {
     if (income.incomeSourceList.length === 0) {
       dispatch(getIncomeSourceList());
     }
-  }, [dispatch, income.incomeSourceList]);
-
-  // Refresh income source list when an income source is deleted
-  useEffect(() => {
-    dispatch(getIncomeSourceList());
-  }, [dispatch, income.incomeSourceList]);
+  }, [income.getIncomeItemsList]); 
 
   return (
     <div className="w-100 h-25 d-flex flex-column">

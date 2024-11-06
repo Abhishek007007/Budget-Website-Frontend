@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { postIncomeItems } from "../redux/incomeSlice";
+import { postIncomeItems, deleteIncomeItem, editIncomeItem, getIncomeItemsList } from "../redux/incomeSlice";
 import { Button, Input, Modal, Select, Table, Form } from "antd";
 
 function IncomeItems() {
   const income = useSelector((state) => state.income);
   const dispatch = useDispatch();
+
   const ItemForm = {
     source: 0,
     amount: "",
@@ -15,6 +16,8 @@ function IncomeItems() {
 
   const [isAddingItem, setIsAddingItem] = useState(false);
   const [form, setForm] = useState(ItemForm);
+  const [isEditingItem, setIsEditingItem] = useState(false);
+  const [currentEditingItem, setCurrentEditingItem] = useState(null);
 
   useEffect(() => {}, [income.incomeItemsList]);
 
@@ -27,11 +30,37 @@ function IncomeItems() {
   async function handleSubmit(e) {
     e.preventDefault();
 
-    const newform = { ...form };
-    newform.source = income.incomeSourceList[form.source].id;
-    dispatch(postIncomeItems(newform));
+    const newForm = { ...form };
+    newForm.source = income.incomeSourceList[form.source].id;
+    dispatch(postIncomeItems(newForm));
     setForm(ItemForm);
     setIsAddingItem(false);
+  }
+
+  async function handleDelete(itemId) {
+    await dispatch(deleteIncomeItem(itemId));
+    dispatch(getIncomeItemsList())
+  }
+
+  function handleEdit(item) {
+    setCurrentEditingItem(item);
+    setForm({
+      source: income.incomeSourceList.findIndex((source) => source.id === item.source.id),
+      amount: item.amount,
+      description: item.description,
+      date: item.date,
+    });
+    setIsEditingItem(true);
+    
+  }
+
+  async function handleEditSubmit() {
+    const updatedItem = { ...form };
+    updatedItem.source = income.incomeSourceList[form.source];
+    await dispatch(editIncomeItem({ id: currentEditingItem.id, ...updatedItem }));
+    dispatch(getIncomeItemsList())
+    setIsEditingItem(false);
+    setCurrentEditingItem(null);
   }
 
   const columns = [
@@ -56,6 +85,20 @@ function IncomeItems() {
       dataIndex: "date",
       key: "date",
     },
+    {
+      title: "Actions",
+      key: "actions",
+      render: (text, record) => (
+        <div>
+          <Button type="link" onClick={() => handleEdit(record)}>
+            Edit
+          </Button>
+          <Button type="link" danger onClick={() => handleDelete(record.id)}>
+            Delete
+          </Button>
+        </div>
+      ),
+    },
   ];
 
   return (
@@ -79,6 +122,61 @@ function IncomeItems() {
         onCancel={() => setIsAddingItem(false)}
         onOk={handleSubmit}
         okText="Add"
+        cancelText="Close"
+      >
+        <Form layout="vertical">
+          <Form.Item label="Income Source" required>
+            <Select
+              name="source"
+              value={form.source}
+              onChange={(value) => setForm({ ...form, source: value })}
+            >
+              {income.incomeSourceList.map((source, idx) => (
+                <Select.Option key={idx} value={idx}>
+                  {source.source_name}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+
+          <Form.Item label="Amount" required>
+            <Input
+              type="text"
+              name="amount"
+              value={form.amount}
+              onChange={handleChange}
+              placeholder="Amount"
+            />
+          </Form.Item>
+
+          <Form.Item label="Description">
+            <Input
+              type="text"
+              name="description"
+              value={form.description}
+              onChange={handleChange}
+              placeholder="Description"
+            />
+          </Form.Item>
+
+          <Form.Item label="Date">
+            <Input
+              type="date"
+              name="date"
+              value={form.date}
+              onChange={handleChange}
+            />
+          </Form.Item>
+        </Form>
+      </Modal>
+
+      {/* Modal for Editing an Income Item */}
+      <Modal
+        title="Edit Income Item"
+        visible={isEditingItem}
+        onCancel={() => setIsEditingItem(false)}
+        onOk={handleEditSubmit}
+        okText="Save"
         cancelText="Close"
       >
         <Form layout="vertical">
