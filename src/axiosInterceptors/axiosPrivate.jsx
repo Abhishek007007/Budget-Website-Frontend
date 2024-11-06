@@ -1,14 +1,8 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 
-const refresh = Cookies.get("refresh");
-const access = Cookies.get("access");
-
 const axiosPrivate = axios.create({
   baseURL: import.meta.env.VITE_BASE_API_URL,
-  headers: {
-    Authorization: "Bearer " + access,
-  },
 });
 
 async function refreshAccessToken() {
@@ -16,11 +10,11 @@ async function refreshAccessToken() {
     const resp = await axios.post(
       import.meta.env.VITE_BASE_API_URL + "/api/v1/token/refresh/",
       {
-        refresh: refresh,
+        refresh: Cookies.get("refresh"),
       },
       {
         headers: {
-          Authorization: "Bearer " + access,
+          Authorization: "Bearer " + Cookies.get("access"),
         },
       }
     );
@@ -35,6 +29,10 @@ async function refreshAccessToken() {
     Cookies.remove("user");
   }
 }
+axiosPrivate.interceptors.request.use((config) => {
+  config.headers["Authorization"] = "Bearer " + Cookies.get("access");
+  return config;
+});
 
 axiosPrivate.interceptors.response.use(
   (response) => response,
@@ -42,10 +40,11 @@ axiosPrivate.interceptors.response.use(
     if (error.response && error.response.status === 401) {
       try {
         const newToken = (await refreshAccessToken()).access;
-        axios.defaults.headers.common["Authorization"] = newToken;
         const prevRequest = error.config;
-        prevRequest.headers["Authorization"] = newToken;
-        return axios(prevRequest);
+        prevRequest.headers["Authorization"] = "Bearer " + newToken;
+
+        console.log(prevRequest);
+        return await axios(prevRequest);
       } catch (error) {
         return Promise.reject(error);
       }

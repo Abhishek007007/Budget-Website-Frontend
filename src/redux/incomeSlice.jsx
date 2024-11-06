@@ -9,6 +9,7 @@ export const getIncomeSourceList = createAsyncThunk(
 
       return resp.data;
     } catch (error) {
+      console.log(error);
       return rejectWithValue(error);
     }
   }
@@ -19,8 +20,10 @@ export const getIncomeItemsList = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const resp = await axiosPrivate.get("api/v1/finance/income/");
+      console.log(resp);
       return resp.data;
     } catch (error) {
+      console.log(error);
       return rejectWithValue(error);
     }
   }
@@ -31,6 +34,21 @@ export const postIncomeSource = createAsyncThunk(
   async (source_name, { rejectWithValue }) => {
     try {
       const resp = await axiosPrivate.post("api/v1/finance/source/", {
+        source_name: source_name,
+      });
+
+      return resp.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const postIncomeItems = createAsyncThunk(
+  "income/postIncomeItems",
+  async (source_name, { rejectWithValue }) => {
+    try {
+      const resp = await axiosPrivate.post("api/v1/finance/income/", {
         source_name: source_name,
       });
 
@@ -63,9 +81,9 @@ export const incomeSlice = createSlice({
         state.incomeSourceList = payload;
         state.error = false;
       })
-      .addCase(getIncomeSourceList.rejected, (state, { payload }) => {
+      .addCase(getIncomeSourceList.rejected, (state, { error }) => {
         state.loading = false;
-        state.error = payload;
+        state.error = error.message;
         state.success = false;
       })
       .addCase(getIncomeItemsList.pending, (state) => {
@@ -78,9 +96,9 @@ export const incomeSlice = createSlice({
         state.incomeItemsList = payload;
         state.error = false;
       })
-      .addCase(getIncomeItemsList.rejected, (state, { payload }) => {
+      .addCase(getIncomeItemsList.rejected, (state, { error }) => {
         state.loading = false;
-        state.error = payload;
+        state.error = error.message;
         state.success = false;
       })
       .addCase(postIncomeSource.pending, (state) => {
@@ -93,9 +111,9 @@ export const incomeSlice = createSlice({
         state.incomeSourceList.push(payload);
         state.error = false;
       })
-      .addCase(postIncomeSource.rejected, (state, { payload }) => {
+      .addCase(postIncomeSource.rejected, (state, { error }) => {
         state.loading = false;
-        state.error = payload;
+        state.error = error.message;
         state.success = false;
       });
   },
