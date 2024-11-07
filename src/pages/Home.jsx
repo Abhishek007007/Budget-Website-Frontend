@@ -8,6 +8,10 @@ import {
   UploadOutlined,
   SettingOutlined,
   BellOutlined,
+  AppstoreAddOutlined,
+  DollarCircleOutlined,
+  TransactionOutlined,
+  CreditCardOutlined,
 } from '@ant-design/icons';
 import { Button, Layout, Menu, Typography, Avatar, Badge, notification } from 'antd';
 import { useNavigate } from 'react-router-dom';
@@ -20,6 +24,7 @@ import Income from "../components/Income";
 import Settings from "../components/Settings";
 
 import './dashboard.css'; // Import the CSS file
+import CreateBudget from '../components/Budget';
 
 const { Header, Sider, Content } = Layout;
 const { Title } = Typography;
@@ -47,8 +52,11 @@ function Home() {
         return <Expenses />;
       case "Income":
         return <Income />;
+      case "Budgets":
+        return <CreateBudget />;
       case "Settings":
         return <Settings />;
+
       default:
         return <Dashboard />;
     }
@@ -103,21 +111,27 @@ function Home() {
             },
             {
               key: 'Transactions',
-              icon: <VideoCameraOutlined style={{ color: '#ffffff' }} />,
+              icon: <TransactionOutlined style={{ color: '#ffffff' }} />,
               label: 'Transactions',
               onClick: () => setSelectedTab("Transactions"),
             },
             {
               key: 'Expenses',
-              icon: <UploadOutlined style={{ color: '#ffffff' }} />,
+              icon: <CreditCardOutlined style={{ color: '#ffffff' }} />,
               label: 'Expenses',
               onClick: () => setSelectedTab("Expenses"),
             },
             {
               key: 'Income',
-              icon: <UserOutlined style={{ color: '#ffffff' }} />,
+              icon: <DollarCircleOutlined style={{ color: '#ffffff' }} />,
               label: 'Income',
               onClick: () => setSelectedTab("Income"),
+            },
+            {
+              key: 'Budgets',
+              icon: <AppstoreAddOutlined style={{ color: '#ffffff' }} />,
+              label: 'Budgets',
+              onClick: () => setSelectedTab("Budgets"),
             },
             {
               key: 'Settings',
