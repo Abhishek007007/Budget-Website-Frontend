@@ -76,8 +76,8 @@ const RegistrationPage = () => {
         </Form.Item>
 
         <Form.Item
-          name="confirmPassword"
-          dependencies={["password"]}
+          name="password2"
+          dependencies={["passwords"]}
           rules={[
             { required: true, message: "Please confirm your Password!" },
             ({ getFieldValue }) => ({

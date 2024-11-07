@@ -3,13 +3,14 @@ import { Row, Col, Card, Table, Typography, Tag } from 'antd';
 import ApexCharts from 'react-apexcharts';
 import { useSelector, useDispatch } from 'react-redux';
 import { getTransactions } from "../redux/transactionSlice";
+import { getBudget } from "../redux/budgetSlice";
 const { Title } = Typography;
 
 function Dashboard() {
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.auth);
   const transactions = useSelector((state) => state.transactions.transactionsList);
-
+  const { budgets } = useSelector((state) => state.budget);
   const [totalIncome, setTotalIncome] = useState(0);
   const [totalExpense, setTotalExpense] = useState(0);
   const [chartData, setChartData] = useState({
@@ -226,9 +227,8 @@ function Dashboard() {
           </Col>
         </Row>
 
-        {/* Second Row - Charts and Table in one row */}
+       
         <Row gutter={16} style={{ marginTop: '20px' }}>
-          {/* Left column - Charts (one below the other) */}
           <Col span={16}>
             <Card
               title="Daily Income and Expense (Last 5 Days)"
@@ -243,12 +243,11 @@ function Dashboard() {
                 options={chartData.options}
                 series={chartData.series}
                 type="line"
-                height={265} // Chart height is fixed, no scrolling
+                height={265}
               />
             </Card>
           </Col>
 
-          {/* Right column - Transactions Table */}
           <Col span={8}>
             <Card
               title="Recent Transactions"
@@ -263,7 +262,7 @@ function Dashboard() {
                 columns={columns}
                 dataSource={transactions.slice(0, 4)} 
                 pagination={false}
-                rowKey="id" // Assuming 'id' is the key for each transaction
+                rowKey="id" 
               />
             </Card>
           </Col>

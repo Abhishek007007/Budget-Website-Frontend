@@ -12,6 +12,7 @@ import {
   DollarCircleOutlined,
   TransactionOutlined,
   CreditCardOutlined,
+  GroupOutlined,
 } from '@ant-design/icons';
 import { Button, Layout, Menu, Typography, Avatar, Badge, notification } from 'antd';
 import { useNavigate } from 'react-router-dom';
@@ -25,6 +26,7 @@ import Settings from "../components/Settings";
 
 import './dashboard.css'; // Import the CSS file
 import CreateBudget from '../components/Budget';
+import GroupList from '../components/Groups';
 
 const { Header, Sider, Content } = Layout;
 const { Title } = Typography;
@@ -54,6 +56,8 @@ function Home() {
         return <Income />;
       case "Budgets":
         return <CreateBudget />;
+      case "Groups":
+        return <GroupList />;
       case "Settings":
         return <Settings />;
 
@@ -132,6 +136,12 @@ function Home() {
               icon: <AppstoreAddOutlined style={{ color: '#ffffff' }} />,
               label: 'Budgets',
               onClick: () => setSelectedTab("Budgets"),
+            },
+            {
+              key: 'Groups',
+              icon: <GroupOutlined style={{ color: '#ffffff' }} />,
+              label: 'Groups',
+              onClick: () => setSelectedTab("Groups"),
             },
             {
               key: 'Settings',
