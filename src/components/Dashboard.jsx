@@ -8,6 +8,7 @@ const { Title } = Typography;
 function Dashboard() {
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.auth);
+  const budget = useSelector((state) => state.budget);
   const transactions = useSelector(
     (state) => state.transactions.transactionsList
   );
@@ -192,6 +193,31 @@ function Dashboard() {
     <div style={{ backgroundColor: "#ffffff", height: "100vh" }}>
       <div className="w-100 p-3">
         <Row gutter={16}>
+          {budget.budgets.length !== 0 ? (
+            <>
+              <Col span={6}>
+                <Card
+                  title={`Budget:   ${budget.budgets[0].name}`}
+                  bordered={false}
+                  style={{
+                    borderRadius: "20px",
+                    backgroundColor: "#fff7e6", // Light yellow for Balance
+                    color: "#faad14", // Warning color (Ant Design Light)
+                  }}
+                >
+                  <p style={{ fontSize: "20px", fontWeight: "bold" }}>
+                    ₹
+                    {(
+                      budget.budgets[0].budget_limit -
+                      budget.budgets[0].total_expenses
+                    ).toFixed(2)}
+                  </p>
+                </Card>
+              </Col>
+            </>
+          ) : (
+            <></>
+          )}
           <Col span={6}>
             <Card
               title="Total Income"
@@ -230,21 +256,6 @@ function Dashboard() {
                 borderRadius: "20px",
                 backgroundColor: "#f6ffed", // Light green for Savings
                 color: "#52c41a", // Success color (Ant Design Light)
-              }}
-            >
-              <p style={{ fontSize: "20px", fontWeight: "bold" }}>
-                ₹{(totalIncome - totalExpense).toFixed(2)}
-              </p>
-            </Card>
-          </Col>
-          <Col span={6}>
-            <Card
-              title="Total Balance"
-              bordered={false}
-              style={{
-                borderRadius: "20px",
-                backgroundColor: "#fff7e6", // Light yellow for Balance
-                color: "#faad14", // Warning color (Ant Design Light)
               }}
             >
               <p style={{ fontSize: "20px", fontWeight: "bold" }}>
