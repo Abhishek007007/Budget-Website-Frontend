@@ -3,7 +3,8 @@ import authReducer from "./authSlice";
 import incomeReducer from "./incomeSlice";
 import expenseReducer from "./expenseSlice";
 import transactionReducer from "./transactionSlice";
-import budgetReducer from './budgetSlice'
+import budgetReducer from "./budgetSlice";
+import financialGoalsReducer from "./financialGoalsSlice";
 
 export default configureStore({
   reducer: {
@@ -11,6 +12,7 @@ export default configureStore({
     income: incomeReducer,
     expense: expenseReducer,
     transactions: transactionReducer,
-    budget: budgetReducer
+    budget: budgetReducer,
+    goals: financialGoalsReducer,
   },
 });

@@ -38,6 +38,7 @@ import { clearBudget } from "../redux/budgetSlice";
 import { clearExpense } from "../redux/expenseSlice";
 import { clearIncome } from "../redux/incomeSlice";
 import { clearTransactions } from "../redux/transactionSlice";
+import FinancialGoals from "../components/FinancialGoals";
 
 const { Header, Sider, Content } = Layout;
 const { Title } = Typography;
@@ -73,6 +74,8 @@ function Home() {
         return <CreateBudget />;
       case "Settings":
         return <Settings />;
+      case "FinancialGoals":
+        return <FinancialGoals />;
 
       default:
         return <Dashboard />;
@@ -145,6 +148,12 @@ function Home() {
               icon: <DollarCircleOutlined style={{ color: "#ffffff" }} />,
               label: "Income",
               onClick: () => setSelectedTab("Income"),
+            },
+            {
+              key: "FinancialGoals",
+              icon: <DollarCircleOutlined style={{ color: "#ffffff" }} />,
+              label: "Financial Goals",
+              onClick: () => setSelectedTab("FinancialGoals"),
             },
             {
               key: "Budgets",

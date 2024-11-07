@@ -1,7 +1,6 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 
-import { userLogout } from "../redux/authSlice";
 import { clearBudget } from "../redux/budgetSlice";
 import { clearExpense } from "../redux/expenseSlice";
 import { clearIncome } from "../redux/incomeSlice";
@@ -34,7 +33,6 @@ async function refreshAccessToken(store) {
     Cookies.remove("refresh");
     Cookies.remove("user");
 
-    await store.dispatch(userLogout());
     await store.dispatch(clearExpense());
     await store.dispatch(clearIncome());
     await store.dispatch(clearTransactions());

@@ -289,9 +289,10 @@ function Dashboard() {
             >
               <Table
                 columns={columns}
+                rowKey="created_at"
                 dataSource={transactions.slice(0, 4)}
                 pagination={false}
-                rowKey="id" // Assuming 'id' is the key for each transaction
+                // Assuming 'id' is the key for each transaction
               />
             </Card>
           </Col>

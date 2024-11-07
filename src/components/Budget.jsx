@@ -1,8 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Form, Input, Row, Col, message, Select, Modal, Spin, Progress, Card } from "antd";
-import { createBudget, getBudget, deleteBudget, updateBudget } from "../redux/budgetSlice";
-import { LoadingOutlined } from '@ant-design/icons';
+import {
+  Button,
+  Form,
+  Input,
+  Row,
+  Col,
+  message,
+  Select,
+  Modal,
+  Spin,
+  Progress,
+  Card,
+} from "antd";
+import {
+  createBudget,
+  getBudget,
+  deleteBudget,
+  updateBudget,
+} from "../redux/budgetSlice";
+import { LoadingOutlined } from "@ant-design/icons";
 
 const { Option } = Select;
 
@@ -73,7 +90,12 @@ const CreateBudget = () => {
             message.success("Budget removed successfully");
             setIsEditing(false);
             setCurrentBudget(null);
-            setNewBudget({ name: "", description: "", period: "monthly", budget_limit: 0 });
+            setNewBudget({
+              name: "",
+              description: "",
+              period: "monthly",
+              budget_limit: 0,
+            });
           })
           .catch(() => message.error("Failed to remove budget"));
       },
@@ -82,7 +104,9 @@ const CreateBudget = () => {
 
   if (loading) {
     return (
-      <div style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
+      <div
+        style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}
+      >
         <Spin indicator={<LoadingOutlined style={{ fontSize: 50 }} spin />} />
       </div>
     );
@@ -96,7 +120,8 @@ const CreateBudget = () => {
   const totalExpenses = currentBudget ? currentBudget.total_expenses : 0;
   const remainingBalance = budgetLimit - totalExpenses;
 
-  const percentageSpent = budgetLimit === 0 ? 0 : (totalExpenses / budgetLimit) * 100;
+  const percentageSpent =
+    budgetLimit === 0 ? 0 : (totalExpenses / budgetLimit) * 100;
 
   return (
     <div style={{ margin: "20px" }}>
@@ -114,11 +139,16 @@ const CreateBudget = () => {
             <Form.Item
               label="Budget Name"
               name="name"
-              rules={[{ required: !isEditing, message: "Please enter a budget name" }]}>
+              rules={[
+                { required: !isEditing, message: "Please enter a budget name" },
+              ]}
+            >
               <Input
                 value={newBudget.name}
                 onChange={(e) => handleInputChange(e, "name")}
-                placeholder={isEditing ? currentBudget.name : "Enter your budget name"}
+                placeholder={
+                  isEditing ? currentBudget.name : "Enter your budget name"
+                }
                 disabled={isEditing}
               />
             </Form.Item>
@@ -128,7 +158,9 @@ const CreateBudget = () => {
               <Input
                 value={newBudget.description}
                 onChange={(e) => handleInputChange(e, "description")}
-                placeholder={isEditing ? currentBudget.description : "Enter a description"}
+                placeholder={
+                  isEditing ? currentBudget.description : "Enter a description"
+                }
               />
             </Form.Item>
           </Col>
@@ -150,12 +182,20 @@ const CreateBudget = () => {
             <Form.Item
               label="Budget Limit"
               name="budget_limit"
-              rules={[{ required: !isEditing, message: "Please enter a valid budget limit" }]}>
+              rules={[
+                {
+                  required: !isEditing,
+                  message: "Please enter a valid budget limit",
+                },
+              ]}
+            >
               <Input
                 type="number"
                 value={newBudget.budget_limit}
                 onChange={(e) => handleInputChange(e, "budget_limit")}
-                placeholder={isEditing ? currentBudget.budget_limit : "Enter budget limit"}
+                placeholder={
+                  isEditing ? currentBudget.budget_limit : "Enter budget limit"
+                }
               />
             </Form.Item>
           </Col>
@@ -170,28 +210,36 @@ const CreateBudget = () => {
           <Col span={12} style={{ textAlign: "center" }}>
             <h4 className="mb-5">Budget Spending Overview</h4>
             <Progress
-  type="circle"
-  percent={percentageSpent}
-  format={(percent) => (
-    <span style={{ fontSize: '16px' }}>
-      {`${percent.toFixed(2)}% spent`}  {/* Display percentage with 2 decimal places */}
-    </span>
-  )}
-  strokeColor={
-    percentageSpent <= 50 ? '#52c41a' : // Red if percentage is 50 or below
-    percentageSpent <= 60 ? '#fadb14' : // Yellow if percentage is between 50 and 60
-    '#ff4d4f' // Green if percentage is above 60
-  }
-  width={180} // Increase the width to make the progress bar bigger
-/>
-
+              type="circle"
+              percent={percentageSpent}
+              format={(percent) => (
+                <span style={{ fontSize: "16px" }}>
+                  {`${percent.toFixed(2)}% spent`}{" "}
+                  {/* Display percentage with 2 decimal places */}
+                </span>
+              )}
+              strokeColor={
+                percentageSpent <= 50
+                  ? "#52c41a" // Red if percentage is 50 or below
+                  : percentageSpent <= 60
+                  ? "#fadb14" // Yellow if percentage is between 50 and 60
+                  : "#ff4d4f" // Green if percentage is above 60
+              }
+              width={180} // Increase the width to make the progress bar bigger
+            />
           </Col>
 
           <Col span={12}>
             <Card title="Budget Details" style={{ marginTop: "24px" }}>
-              <p><strong>Total Limit:</strong> ₹{budgetLimit}</p>
-              <p><strong>Spent:</strong> ₹{totalExpenses}</p>
-              <p><strong>Remaining:</strong> ₹{remainingBalance}</p>
+              <p>
+                <strong>Total Limit:</strong> ₹{budgetLimit}
+              </p>
+              <p>
+                <strong>Spent:</strong> ₹{totalExpenses}
+              </p>
+              <p>
+                <strong>Remaining:</strong> ₹{remainingBalance}
+              </p>
             </Card>
           </Col>
         </Row>
@@ -201,7 +249,7 @@ const CreateBudget = () => {
       {isEditing && (
         <Button
           type="danger"
-          style={{ marginTop: "20px" , color: 'white'}}
+          style={{ marginTop: "20px", color: "white" }}
           onClick={onRemoveBudget}
         >
           Remove Budget
