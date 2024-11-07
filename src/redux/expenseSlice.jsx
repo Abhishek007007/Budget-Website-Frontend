@@ -1,6 +1,6 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, createAction } from "@reduxjs/toolkit";
 import axiosPrivate from "./../axiosInterceptors/axiosPrivate";
- 
+
 // Fetch expense category list
 export const getExpenseCategoryList = createAsyncThunk(
   "expense/getExpenseCategoryList",
@@ -14,7 +14,7 @@ export const getExpenseCategoryList = createAsyncThunk(
     }
   }
 );
- 
+
 // Add new expense category
 export const postExpenseCategory = createAsyncThunk(
   "expense/postExpenseCategory",
@@ -29,7 +29,7 @@ export const postExpenseCategory = createAsyncThunk(
     }
   }
 );
- 
+
 // Delete an expense category
 export const deleteExpenseCategory = createAsyncThunk(
   "expense/deleteExpenseCategory",
@@ -41,7 +41,7 @@ export const deleteExpenseCategory = createAsyncThunk(
     }
   }
 );
- 
+
 // Edit an expense category
 export const editExpenseCategory = createAsyncThunk(
   "expense/editExpenseCategory",
@@ -55,7 +55,7 @@ export const editExpenseCategory = createAsyncThunk(
     }
   }
 );
- 
+
 // Fetch expense items list
 export const getExpenseItemsList = createAsyncThunk(
   "expense/getExpenseItemsList",
@@ -70,7 +70,7 @@ export const getExpenseItemsList = createAsyncThunk(
     }
   }
 );
- 
+
 // Add new expense item
 export const postExpenseItem = createAsyncThunk(
   "expense/postExpenseItem",
@@ -83,7 +83,7 @@ export const postExpenseItem = createAsyncThunk(
     }
   }
 );
- 
+
 // Delete an expense item
 export const deleteExpenseItem = createAsyncThunk(
   "expense/deleteExpenseItem",
@@ -95,7 +95,7 @@ export const deleteExpenseItem = createAsyncThunk(
     }
   }
 );
- 
+
 // Edit an expense item
 export const editExpenseItem = createAsyncThunk(
   "expense/editExpenseItem",
@@ -112,17 +112,21 @@ export const editExpenseItem = createAsyncThunk(
     }
   }
 );
- 
+
+export const clearExpense = createAction("expense/clearExpense");
+
+const initialState = {
+  expenseCategoryList: [],
+  expenseItemsList: [],
+  error: null,
+  success: false,
+  loading: false,
+};
+
 // Expense slice
 export const expenseSlice = createSlice({
   name: "expense",
-  initialState: {
-    expenseCategoryList: [],
-    expenseItemsList: [],
-    error: null,
-    success: false,
-    loading: false,
-  },
+  initialState: initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
@@ -241,8 +245,11 @@ export const expenseSlice = createSlice({
         state.loading = false;
         state.error = error.message;
         state.success = false;
+      })
+      .addCase(clearExpense, (state) => {
+        state = initialState;
       });
   },
 });
- 
+
 export default expenseSlice.reducer;

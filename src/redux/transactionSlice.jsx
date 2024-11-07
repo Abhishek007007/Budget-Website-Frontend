@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axiosPrivate from "./../axiosInterceptors/axiosPrivate";
 
 // Fetch the list of transactions
@@ -14,15 +14,17 @@ export const getTransactions = createAsyncThunk(
     }
   }
 );
+const initialState = {
+  transactionsList: [],
+  error: null,
+  success: false,
+  loading: false,
+};
 
+export const clearTransactions = createAction("transactions/clearTransactions");
 const transactionsSlice = createSlice({
   name: "transactions",
-  initialState: {
-    transactionsList: [],
-    error: null,
-    success: false,
-    loading: false,
-  },
+  initialState: initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
@@ -41,6 +43,9 @@ const transactionsSlice = createSlice({
         state.loading = false;
         state.error = error.message;
         state.success = false;
+      })
+      .addCase(clearTransactions, (state) => {
+        state = initialState;
       });
   },
 });

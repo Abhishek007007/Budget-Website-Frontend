@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axiosPrivate from "./../axiosInterceptors/axiosPrivate";
 
 export const getIncomeSourceList = createAsyncThunk(
@@ -112,15 +112,19 @@ export const editIncomeItem = createAsyncThunk(
   }
 );
 
+const initialState = {
+  incomeSourceList: [],
+  incomeItemsList: [],
+  error: null,
+  success: false,
+  loading: false,
+};
+
+export const clearIncome = createAction("income/clearIncome");
+
 export const incomeSlice = createSlice({
   name: "income",
-  initialState: {
-    incomeSourceList: [],
-    incomeItemsList: [],
-    error: null,
-    success: false,
-    loading: false,
-  },
+  initialState: initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
@@ -239,6 +243,9 @@ export const incomeSlice = createSlice({
         state.loading = false;
         state.error = error.message;
         state.success = false;
+      })
+      .addCase(clearIncome, (state) => {
+        state = initialState;
       });
   },
 });
