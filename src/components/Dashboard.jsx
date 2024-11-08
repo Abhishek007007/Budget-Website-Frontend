@@ -3,6 +3,7 @@ import { Row, Col, Card, Table, Typography, Tag } from "antd";
 import ApexCharts from "react-apexcharts";
 import { useSelector, useDispatch } from "react-redux";
 import { getTransactions } from "../redux/transactionSlice";
+import { getBudget } from "../redux/budgetSlice";
 const { Title } = Typography;
 
 function Dashboard() {
@@ -282,12 +283,11 @@ function Dashboard() {
                 options={chartData.options}
                 series={chartData.series}
                 type="line"
-                height={265} // Chart height is fixed, no scrolling
+                height={265}
               />
             </Card>
           </Col>
 
-          {/* Right column - Transactions Table */}
           <Col span={8}>
             <Card
               title="Recent Transactions"
