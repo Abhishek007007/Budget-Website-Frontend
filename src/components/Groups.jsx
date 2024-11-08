@@ -7,6 +7,7 @@ import {
   addGroupMember,
   removeGroupMember,
   createExpense,
+  deleteExpense
 } from "../redux/groupSlice";
 import {
   Button,
@@ -21,6 +22,7 @@ import {
   Divider,
   Row,
   Col,
+  Table,
 } from "antd";
 import { DeleteOutlined, PlusOutlined, UserOutlined } from "@ant-design/icons";
 
@@ -174,6 +176,55 @@ const Groups = () => {
     return <div>Error: {error}</div>;
   }
 
+  const expenseColumns = [
+    {
+      title: "Title",
+      dataIndex: "title",
+      key: "title",
+    },
+    {
+      title: "Description",
+      dataIndex: "description",
+      key: "description",
+    },
+    {
+      title: "Amount (INR)",
+      dataIndex: "amount",
+      key: "amount",
+      render: (text) => `${text} INR`, // Optional: format amount with "INR" suffix
+    },
+    {
+      title: "Date",
+      dataIndex: "date",
+      key: "date",
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (text, record) => (
+        <Button
+          type="danger"
+          icon={<DeleteOutlined />}
+          onClick={() => handleDeleteExpense(record.id)}
+        >
+          Delete
+        </Button>
+      ),
+    },
+  ];
+  
+  const handleDeleteExpense = async (expenseId) => {
+    try {
+      await dispatch(deleteExpense(expenseId)); // Assuming you have a deleteExpense action
+      openNotification("Expense Deleted", "The expense has been deleted successfully.");
+      dispatch(getGroups()); // Re-fetch groups to get the latest data
+    } catch (error) {
+      openNotification("Error", "Failed to delete expense.");
+    }
+  };
+  
+  
+
   return (
     <div style={{ padding: "20px" }}>
       <h2>Your Groups</h2>
@@ -235,17 +286,17 @@ const Groups = () => {
                 <Collapse bordered={false} style={{ marginTop: "20px" }}>
                   <Panel header="Expenses" key="1">
                     {group.expenses?.length > 0 ? (
-                      <ul>
-                        {group.expenses.map((expense) => (
-                          <li key={expense.id}>
-                            <strong>{expense.title}</strong> - {expense.amount} INR
-                            <br />
-                            {expense.description}
-                            <br />
-                            Date: {expense.date}
-                          </li>
-                        ))}
-                      </ul>
+                      <Table
+                      columns={expenseColumns}
+                      dataSource={group.expenses.map((expense) => ({
+                        key: expense.id,
+                        title: expense.title,
+                        description: expense.description,
+                        amount: expense.amount,
+                        date: expense.date,
+                      }))}
+                      pagination={true}
+                    />
                     ) : (
                       <p>No expenses added yet.</p>
                     )}

@@ -129,6 +129,20 @@ export const createExpense = createAsyncThunk(
   }
 );
 
+
+export const deleteExpense = createAsyncThunk(
+  "expenses/deleteExpense",
+  async ({expenseId }, { rejectWithValue }) => {
+    try {
+      console.log(expenseId)
+      await axiosPrivate.delete(`/api/v1/finance/groupexpense/${expenseId}/`);
+      return { expenseId }; // Returning groupId and expenseId to remove it from state
+    } catch (error) {
+      console.log(error);
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
   
 const groupsSlice = createSlice({
   name: "groups",
@@ -277,6 +291,26 @@ const groupsSlice = createSlice({
       .addCase(createExpense.rejected, (state, { payload }) => {
         state.loading = false;
         state.error = payload;
+      })
+      .addCase(deleteExpense.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteExpense.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        const { groupId, expenseId } = payload;
+        if (state.expenses[groupId]) {
+          // Remove the expense from the expenses array of the specified group
+          state.expenses[groupId] = state.expenses[groupId].filter(
+            (expense) => expense.id !== expenseId
+          );
+        }
+        state.error = null;
+      })
+      .addCase(deleteExpense.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.error = payload;
+        state.success = false;
       });
   },
 });
