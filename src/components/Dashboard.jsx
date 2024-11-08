@@ -9,16 +9,11 @@ const { Title } = Typography;
 function Dashboard() {
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.auth);
-<<<<<<< HEAD
-  const transactions = useSelector((state) => state.transactions.transactionsList);
-  const { budgets } = useSelector((state) => state.budget);
-=======
   const budget = useSelector((state) => state.budget);
   const transactions = useSelector(
     (state) => state.transactions.transactionsList
   );
 
->>>>>>> a8408a19fb4683696c322ca99f5242932d4993d5
   const [totalIncome, setTotalIncome] = useState(0);
   const [totalExpense, setTotalExpense] = useState(0);
   const [chartData, setChartData] = useState({

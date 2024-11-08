@@ -12,6 +12,7 @@ import {
   DollarCircleOutlined,
   TransactionOutlined,
   CreditCardOutlined,
+  GroupOutlined,
 } from "@ant-design/icons";
 import {
   Button,
@@ -39,6 +40,7 @@ import { clearExpense } from "../redux/expenseSlice";
 import { clearIncome } from "../redux/incomeSlice";
 import { clearTransactions } from "../redux/transactionSlice";
 import FinancialGoals from "../components/FinancialGoals";
+import Groups from "../components/Groups";
 
 const { Header, Sider, Content } = Layout;
 const { Title } = Typography;
@@ -73,7 +75,7 @@ function Home() {
       case "Budgets":
         return <CreateBudget />;
       case "Groups":
-        return <GroupList />;
+        return <Groups />;
       case "Settings":
         return <Settings />;
       case "FinancialGoals":
