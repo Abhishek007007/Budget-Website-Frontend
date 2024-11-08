@@ -77,7 +77,7 @@ const RegistrationPage = () => {
 
         <Form.Item
           name="password2"
-          dependencies={["passwords"]}
+          dependencies={["password"]}
           rules={[
             { required: true, message: "Please confirm your Password!" },
             ({ getFieldValue }) => ({
@@ -90,7 +90,10 @@ const RegistrationPage = () => {
             }),
           ]}
         >
-          <Input.Password prefix={<LockOutlined />} placeholder="Confirm Password" />
+          <Input.Password
+            prefix={<LockOutlined />}
+            placeholder="Confirm Password"
+          />
         </Form.Item>
 
         <Form.Item>
@@ -103,7 +106,7 @@ const RegistrationPage = () => {
       <img
         src="https://firebasestorage.googleapis.com/v0/b/gadget-a7f0c.appspot.com/o/ui%2Fundraw_investing_re_bov7.svg?alt=media&token=9bc1b60c-8e34-4cc6-b208-82e045e0784e"
         alt="Password Illustration"
-        style={{ width: '100%', maxWidth: '400px' }} // Optional: Adjust image size
+        style={{ width: "100%", maxWidth: "400px" }} // Optional: Adjust image size
       />
     </div>
   );

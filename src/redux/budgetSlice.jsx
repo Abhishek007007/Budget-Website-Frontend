@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, createAction } from "@reduxjs/toolkit";
 import axiosPrivate from "./../axiosInterceptors/axiosPrivate";
 
 // Fetch the current budget details
@@ -22,10 +22,15 @@ export const createBudget = createAsyncThunk(
       // Check if a budget already exists
       const state = getState();
       if (state.budget.budgets.length > 0) {
-        return rejectWithValue("A budget already exists. You can only have one active budget.");
+        return rejectWithValue(
+          "A budget already exists. You can only have one active budget."
+        );
       }
 
-      const resp = await axiosPrivate.post("api/v1/finance/budgets/", budgetData);
+      const resp = await axiosPrivate.post(
+        "api/v1/finance/budgets/",
+        budgetData
+      );
       return resp.data; // Assuming the response contains the newly created budget
     } catch (error) {
       return rejectWithValue(error);
@@ -34,17 +39,19 @@ export const createBudget = createAsyncThunk(
 );
 
 export const updateBudget = createAsyncThunk(
-    "budget/updateBudget",
-    async ({ budgetId, updatedData }, { rejectWithValue }) => {
-      try {
-        const resp = await axiosPrivate.put(`api/v1/finance/budgets/${budgetId}/`, updatedData);
-        return resp.data; // Assuming the response contains the updated budget
-      } catch (error) {
-        return rejectWithValue(error);
-      }
+  "budget/updateBudget",
+  async ({ budgetId, updatedData }, { rejectWithValue }) => {
+    try {
+      const resp = await axiosPrivate.put(
+        `api/v1/finance/budgets/${budgetId}/`,
+        updatedData
+      );
+      return resp.data; // Assuming the response contains the updated budget
+    } catch (error) {
+      return rejectWithValue(error);
     }
-  );
-  
+  }
+);
 
 // Delete a budget
 export const deleteBudget = createAsyncThunk(
@@ -59,14 +66,18 @@ export const deleteBudget = createAsyncThunk(
   }
 );
 
+const initialState = {
+  budgets: [], // Array to store multiple budgets
+  error: null,
+  success: false,
+  loading: false,
+};
+
+export const clearBudget = createAction("budget/clearBudget");
+
 const budgetSlice = createSlice({
   name: "budget",
-  initialState: {
-    budgets: [], // Array to store multiple budgets
-    error: null,
-    success: false,
-    loading: false,
-  },
+  initialState: initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
@@ -110,13 +121,15 @@ const budgetSlice = createSlice({
       .addCase(updateBudget.fulfilled, (state, { payload }) => {
         state.loading = false;
         state.success = true;
-      
+
         // Find the budget to update
-        const index = state.budgets.findIndex(budget => budget.id === payload.id);
+        const index = state.budgets.findIndex(
+          (budget) => budget.id === payload.id
+        );
         if (index !== -1) {
           state.budgets[index] = payload; // Update the existing budget with the updated payload
         }
-      
+
         state.error = null;
       })
       .addCase(updateBudget.rejected, (state, { payload }) => {
@@ -137,6 +150,9 @@ const budgetSlice = createSlice({
         state.loading = false;
         state.error = error.message;
         state.success = false;
+      })
+      .addCase(clearBudget, (state) => {
+        state = initialState;
       });
   },
 });

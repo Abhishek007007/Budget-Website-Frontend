@@ -14,7 +14,6 @@ function PrivateProtectedRoute({ children }) {
     return <h1>Loading</h1>;
   }
 
-  console.log(auth);
   return <Navigate to="/login" />;
 }
 

@@ -2,20 +2,21 @@ import React, { useState, useEffect } from "react";
 import { Table, Tag, Button, Input, Space, Select } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
-import { getTransactions } from "../redux/transactionSlice"; 
+import { getTransactions } from "../redux/transactionSlice";
 
 const { Option } = Select;
 
 const Transactions = () => {
   const dispatch = useDispatch();
 
-  const transactions = useSelector((state) => state.transactions.transactionsList);
+  const transactions = useSelector(
+    (state) => state.transactions.transactionsList
+  );
   const loading = useSelector((state) => state.transactions.loading);
   const error = useSelector((state) => state.transactions.error);
 
-  const [searchText, setSearchText] = useState('');
+  const [searchText, setSearchText] = useState("");
   const [filteredData, setFilteredData] = useState([]);
-
 
   useEffect(() => {
     dispatch(getTransactions());
@@ -27,36 +28,42 @@ const Transactions = () => {
       title: "Description",
       dataIndex: "description",
       sorter: (a, b) => a.description.localeCompare(b.description), // Sort by description
-      sortDirections: ['ascend', 'descend'],
+      sortDirections: ["ascend", "descend"],
     },
     {
       title: "Amount",
       dataIndex: "amount",
       render: (amount) => `₹${amount}`,
       sorter: (a, b) => parseFloat(a.amount) - parseFloat(b.amount), // Sort by amount
-      sortDirections: ['ascend', 'descend'],
+      sortDirections: ["ascend", "descend"],
     },
     {
       title: "Date",
       dataIndex: "date",
       sorter: (a, b) => new Date(a.date) - new Date(b.date), // Sort by date
-      sortDirections: ['ascend', 'descend'],
+      sortDirections: ["ascend", "descend"],
     },
     {
       title: "Type",
       dataIndex: "type",
       render: (type) => (
-        <Tag color={type === "income" ? "green" : "red"}>{type.charAt(0).toUpperCase() + type.slice(1)}</Tag>
+        <Tag color={type === "income" ? "green" : "red"}>
+          {type.charAt(0).toUpperCase() + type.slice(1)}
+        </Tag>
       ),
       filters: [
-        { text: 'Income', value: 'income' },
-        { text: 'Expense', value: 'expense' },
+        { text: "Income", value: "income" },
+        { text: "Expense", value: "expense" },
       ],
       onFilter: (value, record) => record.type.includes(value),
     },
     {
       title: "Actions",
-      render: () => <Button type="link" size="small">Edit</Button>,
+      render: () => (
+        <Button type="link" size="small">
+          Edit
+        </Button>
+      ),
     },
   ];
 
@@ -65,7 +72,9 @@ const Transactions = () => {
     key: `${transaction.id}-${transaction.type}-${index}`, // Unique key
     sourceOrCategory: transaction.source
       ? transaction.source.source_name
-      : transaction.category ? transaction.category.name : 'N/A',
+      : transaction.category
+      ? transaction.category.name
+      : "N/A",
     description: transaction.description,
     amount: transaction.amount,
     date: transaction.date,
@@ -76,9 +85,10 @@ const Transactions = () => {
   const handleSearch = (value) => {
     setSearchText(value);
     setFilteredData(
-      data.filter((item) =>
-        item.description.toLowerCase().includes(value.toLowerCase()) ||
-        item.sourceOrCategory.toLowerCase().includes(value.toLowerCase())
+      data.filter(
+        (item) =>
+          item.description.toLowerCase().includes(value.toLowerCase()) ||
+          item.sourceOrCategory.toLowerCase().includes(value.toLowerCase())
       )
     );
   };

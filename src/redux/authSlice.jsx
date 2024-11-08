@@ -27,7 +27,6 @@ export const userLogin = createAsyncThunk(
   }
 );
 
-
 export const userLogout = createAsyncThunk(
   "auth/logout",
   async (_, { rejectWithValue }) => {
@@ -49,8 +48,8 @@ export const authSlice = createSlice({
   name: "auth",
   initialState: {
     user: Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null,
-    access_token: Cookies.get("access"),
-    refresh_token: Cookies.get("refresh"),
+    access_token: Cookies.get("access") ? Cookies.get("access") : null,
+    refresh_token: Cookies.get("refresh") ? Cookies.get("refresh") : null,
     error: null,
     success: false,
     loading: false,
