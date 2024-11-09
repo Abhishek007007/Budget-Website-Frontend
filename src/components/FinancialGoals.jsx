@@ -20,6 +20,7 @@ import {
   updateGoal,
 } from "./../redux/financialGoalsSlice";
 import { LoadingOutlined } from "@ant-design/icons";
+import { getExpenseCategoryList, getExpenseItemsList } from "../redux/expenseSlice";
 
 const { Option } = Select;
 
@@ -73,6 +74,8 @@ const FinancialGoals = () => {
         await dispatch(
           updateGoal({ goalId: currentGoal.id, updatedData: newGoal })
         );
+        dispatch(getExpenseCategoryList())
+        dispatch(getExpenseItemsList())
         message.success("Goal updated successfully");
         setIsEditing(false);
         setCurrentGoal(null);
