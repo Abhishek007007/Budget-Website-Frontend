@@ -107,7 +107,6 @@ function Dashboard() {
         sourceIncome[sourceName] += amount;
       }
     });
-
     return sourceIncome;
   };
 
@@ -267,6 +266,97 @@ function Dashboard() {
     },
   ];
 
+  // Function to get the top expenses or income sources
+  const getTopTransactions = (transactions, type) => {
+    const transactionData = {};
+
+    transactions.forEach((transaction) => {
+      const amount = parseFloat(
+        transaction.amount.replace("₹", "").replace(",", "")
+      );
+      if (type === "expense" && transaction.category) {
+        const category = transaction.category.name;
+        if (!transactionData[category]) {
+          transactionData[category] = 0;
+        }
+        transactionData[category] += amount;
+      } else if (type === "income" && transaction.source) {
+        const source = transaction.source.source_name;
+        if (!transactionData[source]) {
+          transactionData[source] = 0;
+        }
+        transactionData[source] += amount;
+      }
+    });
+
+    // Sort the data by amount and get the top 5 transactions
+    const sortedData = Object.entries(transactionData)
+      .sort((a, b) => b[1] - a[1]) // Sort by amount in descending order
+      .slice(0, 5); // Get top 5
+
+    const labels = sortedData.map((item) => item[0]); // Category or Source names
+    const values = sortedData.map((item) => item[1]); // Amounts
+
+    return { labels, values };
+  };
+
+  useEffect(() => {
+    if (transactions.length > 0) {
+      const { categories, incomeData, expenseData } =
+        getDailyData(transactions);
+
+      // Get the top transactions for expenses and income sources
+      const topExpenseData = getTopTransactions(transactions, "expense");
+      const topIncomeData = getTopTransactions(transactions, "income");
+
+      // Update chart data for daily income and expenses
+      setChartData((prevState) => ({
+        ...prevState,
+        series: [
+          { name: "Income", data: incomeData },
+          { name: "Expense", data: expenseData },
+        ],
+        options: {
+          ...prevState.options,
+          xaxis: {
+            ...prevState.options.xaxis,
+            categories: categories,
+          },
+        },
+      }));
+
+      // Set pie chart data for categories and sources
+      setPieChartData({
+        categorySeries: topExpenseData.values,
+        categoryLabels: topExpenseData.labels,
+        sourceSeries: topIncomeData.values,
+        sourceLabels: topIncomeData.labels,
+      });
+
+      // Calculate total income and total expense
+      const totalIncomeValue = transactions
+        .filter((transaction) => transaction.type === "income")
+        .reduce(
+          (total, transaction) =>
+            total +
+            parseFloat(transaction.amount.replace("₹", "").replace(",", "")),
+          0
+        );
+
+      const totalExpenseValue = transactions
+        .filter((transaction) => transaction.type === "expense")
+        .reduce(
+          (total, transaction) =>
+            total +
+            parseFloat(transaction.amount.replace("₹", "").replace(",", "")),
+          0
+        );
+
+      setTotalIncome(totalIncomeValue);
+      setTotalExpense(totalExpenseValue);
+    }
+  }, [transactions]);
+
   return (
     <div style={{ backgroundColor: "#ffffff", height: "100vh" }}>
       <div className="w-100 p-3">
@@ -374,6 +464,8 @@ function Dashboard() {
                 borderRadius: "20px",
                 boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
                 backgroundColor: "#ffffff",
+                minHeight: "442px",
+                maxHeight: "442px",
               }}
             >
               <Table
@@ -446,6 +538,34 @@ function Dashboard() {
               />
             </Card>
           </Col>
+
+          {/* Right column - Pie chart for source-wise income */}
+          {/* <Col span={12}>
+            <Card
+              title="Source-wise Income"
+              bordered={false}
+              style={{
+                borderRadius: "20px",
+                boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
+                marginBottom: "20px",
+              }}
+            >
+              <ApexCharts
+                options={{
+                  labels: pieChartData.sourceLabels,
+                  chart: {
+                    type: "pie",
+                  },
+                  legend: {
+                    position: "bottom",
+                  },
+                }}
+                series={pieChartData.sourceSeries}
+                type="pie"
+                height={300}
+              />
+            </Card>
+          </Col> */}
         </Row>
       </div>
     </div>

@@ -6,7 +6,8 @@ import {
   editExpenseItem,
   getExpenseItemsList,
 } from "../redux/expenseSlice";
-import { Button, Input, Modal, Select, Table, Form } from "antd";
+import { Button, Input, Modal, Select, Table, Form, Space } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
 
 function ExpenseItems() {
   const expense = useSelector((state) => state.expense);
@@ -23,6 +24,8 @@ function ExpenseItems() {
   const [form, setForm] = useState(ItemForm);
   const [isEditingItem, setIsEditingItem] = useState(false);
   const [currentEditingItem, setCurrentEditingItem] = useState(null);
+  const [searchText, setSearchText] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState(null);  // Added category filter state
 
   useEffect(() => {
     dispatch(getExpenseItemsList());
@@ -40,7 +43,7 @@ function ExpenseItems() {
     const newForm = { ...form };
     newForm.category = expense.expenseCategoryList[form.category].id;
     dispatch(postExpenseItem(newForm));
-    console.log(newForm)
+    console.log(newForm);
     setForm(ItemForm);
     setIsAddingItem(false);
   }
@@ -72,27 +75,120 @@ function ExpenseItems() {
     setCurrentEditingItem(null);
   }
 
+  // Search filter function for table
+  const handleSearch = (selectedKeys, confirm) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+  };
+
+  const handleReset = (clearFilters) => {
+    clearFilters();
+    setSearchText("");
+  };
+
+  // Custom filter logic for category
+  const handleCategoryFilter = (value) => {
+    setCategoryFilter(value);
+  };
+
+  // Filtered data based on category and search text
+  const filteredData = expense.expenseItemsList.filter((item) => {
+    const matchCategory = categoryFilter
+      ? item.category.id === categoryFilter
+      : true;
+    const matchSearchText = searchText
+      ? item.description.toLowerCase().includes(searchText.toLowerCase())
+      : true;
+    return matchCategory && matchSearchText;
+  });
+
   const columns = [
     {
       title: "Category",
       dataIndex: "category",
       key: "category",
       render: (text) => text.name,
+      ...{
+        filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+          <div style={{ padding: 8 }}>
+            <Input
+              autoFocus
+              placeholder={`Search Category`}
+              value={selectedKeys[0]}
+              onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+              onPressEnter={() => handleSearch(selectedKeys, confirm)}
+              style={{ width: 188, marginBottom: 8, display: "block" }}
+            />
+            <Space>
+              <Button
+                type="link"
+                onClick={() => handleSearch(selectedKeys, confirm)}
+                icon={<SearchOutlined />}
+              >
+                Search
+              </Button>
+              <Button
+                type="link"
+                onClick={() => handleReset(clearFilters)}
+              >
+                Reset
+              </Button>
+            </Space>
+          </div>
+        ),
+        filterIcon: (filtered) => (
+          <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+        ),
+      },
     },
     {
       title: "Amount",
       dataIndex: "amount",
       key: "amount",
+      sorter: (a, b) => a.amount - b.amount,
+      sortDirections: ['ascend', 'descend'],
     },
     {
       title: "Description",
       dataIndex: "description",
       key: "description",
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+        <div style={{ padding: 8 }}>
+          <Input
+            autoFocus
+            placeholder={`Search Description`}
+            value={selectedKeys[0]}
+            onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+            onPressEnter={() => handleSearch(selectedKeys, confirm)}
+            style={{ width: 188, marginBottom: 8, display: "block" }}
+          />
+          <Space>
+            <Button
+              type="link"
+              onClick={() => handleSearch(selectedKeys, confirm)}
+              icon={<SearchOutlined />}
+            >
+              Search
+            </Button>
+            <Button
+              type="link"
+              onClick={() => handleReset(clearFilters)}
+            >
+              Reset
+            </Button>
+          </Space>
+        </div>
+      ),
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+      ),
     },
     {
       title: "Date",
       dataIndex: "date",
       key: "date",
+      sorter: (a, b) => new Date(a.date) - new Date(b.date),
+      sortDirections: ['ascend', 'descend'],
     },
     {
       title: "Actions",
@@ -113,7 +209,7 @@ function ExpenseItems() {
   return (
     <div className="w-100 h-100 d-flex flex-column">
       <div className="w-100 d-flex flex-row justify-content-between align-items-center">
-        <h2>Expense Items</h2>
+        <h5>Expense Items</h5>
         <Button
           type="primary"
           onClick={() => {
@@ -234,10 +330,27 @@ function ExpenseItems() {
         </Form>
       </Modal>
 
-      {/* Table for displaying Expense Items */}
-      {expense.expenseItemsList.length > 0 && (
-        <Table columns={columns} dataSource={expense.expenseItemsList} rowKey="id" />
-      )}
+      {/* Category Filter */}
+      <Select
+        value={categoryFilter}
+        onChange={handleCategoryFilter}
+        placeholder="Filter by Category"
+        style={{ width: 200, marginBottom: 16 }}
+      >
+        <Select.Option value={null}>All Categories</Select.Option>
+        {expense.expenseCategoryList.map((category) => (
+          <Select.Option key={category.id} value={category.id}>
+            {category.name}
+          </Select.Option>
+        ))}
+      </Select>
+
+      <Table
+        columns={columns}
+        dataSource={filteredData}
+        rowKey="id"
+        pagination={false}
+      />
     </div>
   );
 }
