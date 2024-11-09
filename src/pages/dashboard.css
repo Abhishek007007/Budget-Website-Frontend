@@ -65,6 +65,6 @@ body {
 .ant-btn-danger:disabled {
   opacity: 0.5;
 }
-.ant-btn-primary:disabled {
+/* .ant-btn-primary:disabled {
   opacity: 0.75;
-}
+} */

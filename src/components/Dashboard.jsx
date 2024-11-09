@@ -3,6 +3,7 @@ import { Row, Col, Card, Table, Typography, Tag } from "antd";
 import ApexCharts from "react-apexcharts";
 import { useSelector, useDispatch } from "react-redux";
 import { getTransactions } from "../redux/transactionSlice";
+import { getBudget } from "../redux/budgetSlice";
 const { Title } = Typography;
 
 function Dashboard() {
@@ -114,12 +115,15 @@ function Dashboard() {
 
   useEffect(() => {
     dispatch(getTransactions());
+    dispatch(getBudget());
   }, [dispatch]);
 
   useEffect(() => {
     if (transactions.length > 0) {
       const { categories, incomeData, expenseData } =
         getDailyData(transactions);
+
+      console.log(getDailyData(transactions));
       setChartData((prevState) => ({
         ...prevState,
         series: [
