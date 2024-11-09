@@ -13,6 +13,8 @@ import {
   TransactionOutlined,
   CreditCardOutlined,
   GroupOutlined,
+  PaperClipOutlined,
+  RadiusBottomleftOutlined,
 } from "@ant-design/icons";
 import {
   Button,
@@ -41,6 +43,8 @@ import { clearIncome } from "../redux/incomeSlice";
 import { clearTransactions } from "../redux/transactionSlice";
 import FinancialGoals from "../components/FinancialGoals";
 import Groups from "../components/Groups";
+import NewsComponent from "../components/news";
+import BillReminderComponent from "../components/Bills";
 
 const { Header, Sider, Content } = Layout;
 const { Title } = Typography;
@@ -80,7 +84,10 @@ function Home() {
         return <Settings />;
       case "FinancialGoals":
         return <FinancialGoals />;
-
+      case "News":
+        return <NewsComponent/>
+      case "Bills":
+        return <BillReminderComponent/>
       default:
         return <Dashboard />;
     }
@@ -172,6 +179,18 @@ function Home() {
               onClick: () => setSelectedTab("Groups"),
             },
             {
+              key: 'Bills',
+              icon: <RadiusBottomleftOutlined style={{ color: '#ffffff' }} />,
+              label: 'Bills',
+              onClick: () => setSelectedTab("Bills"),
+            },
+            {
+              key: 'News',
+              icon: <PaperClipOutlined style={{ color: '#ffffff' }} />,
+              label: 'News',
+              onClick: () => setSelectedTab("News"),
+            },
+            {
               key: 'Settings',
               icon: <SettingOutlined style={{ color: '#ffffff' }} />,
               label: 'Settings',
@@ -187,7 +206,7 @@ function Home() {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            borderRadius: "8px",
+            borderRadius: "18px",
           }}
         >
           <Button

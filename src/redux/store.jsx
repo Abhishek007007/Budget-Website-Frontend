@@ -6,6 +6,7 @@ import transactionReducer from "./transactionSlice";
 import budgetReducer from './budgetSlice'
 import groupsReducer from './groupSlice'
 import financialGoalsReducer from "./financialGoalsSlice";
+import billRemindersReducer from "./billsSlice"
 
 export default configureStore({
   reducer: {
@@ -16,5 +17,6 @@ export default configureStore({
     budget: budgetReducer,
     groups: groupsReducer, 
     goals: financialGoalsReducer,
+    billReminders: billRemindersReducer, 
   },
 });
