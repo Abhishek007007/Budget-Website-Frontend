@@ -122,8 +122,6 @@ function Dashboard() {
     if (transactions.length > 0) {
       const { categories, incomeData, expenseData } =
         getDailyData(transactions);
-
-      console.log(getDailyData(transactions));
       setChartData((prevState) => ({
         ...prevState,
         series: [
