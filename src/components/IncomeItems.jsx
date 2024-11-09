@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { postIncomeItems, deleteIncomeItem, editIncomeItem, getIncomeItemsList } from "../redux/incomeSlice";
-import { Button, Input, Modal, Select, Table, Form } from "antd";
+import { Button, Input, Modal, Select, Table, Form, Space } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
 
 function IncomeItems() {
   const income = useSelector((state) => state.income);
@@ -18,8 +19,12 @@ function IncomeItems() {
   const [form, setForm] = useState(ItemForm);
   const [isEditingItem, setIsEditingItem] = useState(false);
   const [currentEditingItem, setCurrentEditingItem] = useState(null);
+  const [searchText, setSearchText] = useState("");
+  const [selectedSource, setSelectedSource] = useState("");  // State for source filter
 
-  useEffect(() => {}, [income.incomeItemsList]);
+  useEffect(() => {
+    dispatch(getIncomeItemsList());
+  }, [dispatch]);
 
   function handleChange(e) {
     const newForm = { ...form };
@@ -34,13 +39,12 @@ function IncomeItems() {
     newForm.source = income.incomeSourceList[form.source].id;
     dispatch(postIncomeItems(newForm));
     setForm(ItemForm);
-    console.log(newForm)
     setIsAddingItem(false);
   }
 
   async function handleDelete(itemId) {
     await dispatch(deleteIncomeItem(itemId));
-    dispatch(getIncomeItemsList())
+    dispatch(getIncomeItemsList());
   }
 
   function handleEdit(item) {
@@ -52,17 +56,35 @@ function IncomeItems() {
       date: item.date,
     });
     setIsEditingItem(true);
-    
   }
 
   async function handleEditSubmit() {
     const updatedItem = { ...form };
     updatedItem.source = income.incomeSourceList[form.source];
     await dispatch(editIncomeItem({ id: currentEditingItem.id, ...updatedItem }));
-    dispatch(getIncomeItemsList())
+    dispatch(getIncomeItemsList());
     setIsEditingItem(false);
     setCurrentEditingItem(null);
   }
+
+  // Search filter function for table
+  const handleSearch = (selectedKeys, confirm) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+  };
+
+  const handleReset = (clearFilters) => {
+    clearFilters();
+    setSearchText("");
+  };
+
+  // Filtering based on source and description
+  const filteredIncomeItems = income.incomeItemsList.filter((item) => {
+    const matchesSource = selectedSource ? item.source.source_name === selectedSource : true;
+    const matchesSearch = item.source.source_name.toLowerCase().includes(searchText.toLowerCase()) ||
+                          item.description.toLowerCase().includes(searchText.toLowerCase());
+    return matchesSource && matchesSearch;
+  });
 
   const columns = [
     {
@@ -70,21 +92,89 @@ function IncomeItems() {
       dataIndex: "source",
       key: "source",
       render: (text) => text.source_name,
+      ...{
+        filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+          <div style={{ padding: 8 }}>
+            <Input
+              autoFocus
+              placeholder={`Search Source`}
+              value={selectedKeys[0]}
+              onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+              onPressEnter={() => handleSearch(selectedKeys, confirm)}
+              style={{ width: 188, marginBottom: 8, display: "block" }}
+            />
+            <Space>
+              <Button
+                type="link"
+                onClick={() => handleSearch(selectedKeys, confirm)}
+                icon={<SearchOutlined />}
+              >
+                Search
+              </Button>
+              <Button
+                type="link"
+                onClick={() => handleReset(clearFilters)}
+              >
+                Reset
+              </Button>
+            </Space>
+          </div>
+        ),
+        filterIcon: (filtered) => (
+          <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+        ),
+      },
     },
     {
       title: "Amount",
       dataIndex: "amount",
       key: "amount",
+      sorter: (a, b) => a.amount - b.amount, // Sorting by amount
+      sortDirections: ['ascend', 'descend'],
     },
     {
       title: "Description",
       dataIndex: "description",
       key: "description",
+      ...{
+        filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+          <div style={{ padding: 8 }}>
+            <Input
+              autoFocus
+              placeholder={`Search Description`}
+              value={selectedKeys[0]}
+              onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+              onPressEnter={() => handleSearch(selectedKeys, confirm)}
+              style={{ width: 188, marginBottom: 8, display: "block" }}
+            />
+            <Space>
+              <Button
+                type="link"
+                onClick={() => handleSearch(selectedKeys, confirm)}
+                icon={<SearchOutlined />}
+              >
+                Search
+              </Button>
+              <Button
+                type="link"
+                onClick={() => handleReset(clearFilters)}
+              >
+                Reset
+              </Button>
+            </Space>
+          </div>
+        ),
+        filterIcon: (filtered) => (
+          <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+        ),
+      },
     },
     {
       title: "Date",
       dataIndex: "date",
       key: "date",
+      sorter: (a, b) => new Date(a.date) - new Date(b.date), // Sorting by date
+      sortDirections: ['ascend', 'descend'],
     },
     {
       title: "Actions",
@@ -105,7 +195,7 @@ function IncomeItems() {
   return (
     <div className="w-100 h-100 d-flex flex-column">
       <div className="w-100 d-flex flex-row justify-content-between align-items-center">
-        <h2>Income Items</h2>
+        <h5>Income Items</h5>
         <Button
           type="primary"
           onClick={() => {
@@ -226,14 +316,28 @@ function IncomeItems() {
         </Form>
       </Modal>
 
-      {/* Table for displaying Income Items */}
-      {income.incomeItemsList.length > 0 && (
-        <Table
-          columns={columns}
-          dataSource={income.incomeItemsList}
-          rowKey="id"
-        />
-      )}
+      {/* Filter Dropdown */}
+      <div>
+        <Select
+          style={{ width: 200, marginBottom: 10 }}
+          placeholder="Filter by Source"
+          onChange={setSelectedSource}
+        >
+          {income.incomeSourceList.map((source) => (
+            <Select.Option key={source.id} value={source.source_name}>
+              {source.source_name}
+            </Select.Option>
+          ))}
+        </Select>
+      </div>
+
+      {/* Table */}
+      <Table
+        columns={columns}
+        dataSource={filteredIncomeItems}
+        rowKey="id"
+        pagination={false}
+      />
     </div>
   );
 }

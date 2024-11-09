@@ -146,7 +146,6 @@ const CreateBudget = () => {
 
   return (
     <div style={{ margin: "20px" }}>
-      <h2>{isEditing ? "Edit Budget" : "Create a New Budget"}</h2>
 
       {/* Show the Create Budget Form when not editing */}
       {!isEditing && (

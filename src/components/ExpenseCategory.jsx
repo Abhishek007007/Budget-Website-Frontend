@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Input, Modal, Typography, Card, Space } from "antd";
+import { Button, Input, Modal, Typography, Card, Space, Row, Col } from "antd";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import {
   postExpenseCategory,
@@ -56,10 +56,10 @@ function ExpenseCategory() {
   };
 
   // Handle deleting an expense category
-  const handleDeleteExpenseCategory = async(id) => {
+  const handleDeleteExpenseCategory = async (id) => {
     await dispatch(deleteExpenseCategory(id));
     dispatch(getExpenseCategoryList());
-    dispatch(getExpenseItemsList())
+    dispatch(getExpenseItemsList());
   };
 
   // Close the edit modal
@@ -79,7 +79,11 @@ function ExpenseCategory() {
     <div className="w-100 h-25 d-flex flex-column">
       <div className="w-100 d-flex flex-row justify-content-between align-items-center">
         <Title level={4}>Expense Categories</Title>
-        <Button type="primary" icon={<PlusOutlined />} onClick={() => setIsAddingCategory(true)}>
+        <Button
+          type="primary"
+          icon={<PlusOutlined />}
+          onClick={() => setIsAddingCategory(true)}
+        >
           Add Expense Category
         </Button>
       </div>
@@ -93,7 +97,7 @@ function ExpenseCategory() {
       >
         <Space direction="vertical" style={{ width: "100%" }}>
           <Title level={5}>Choose a Predefined Category or Enter a Custom One:</Title>
-          
+
           {/* Buttons for Predefined Categories */}
           <Space wrap>
             {predefinedCategories.map((category) => (
@@ -112,7 +116,7 @@ function ExpenseCategory() {
               </Button>
             ))}
           </Space>
-          
+
           {/* Toggle to enter a custom category */}
           <Button
             type="default"
@@ -127,7 +131,7 @@ function ExpenseCategory() {
           >
             {isCustomCategory ? "Select Predefined" : "Enter Custom Category"}
           </Button>
-          
+
           {/* Input for Custom Category */}
           {isCustomCategory && (
             <Input
@@ -137,7 +141,7 @@ function ExpenseCategory() {
               style={{ marginTop: "10px" }}
             />
           )}
-          
+
           {/* Add Custom Category Button */}
           {isCustomCategory && newExpenseCategory && (
             <Button
@@ -167,41 +171,45 @@ function ExpenseCategory() {
         />
       </Modal>
 
-      {/* Row of Cards with Custom Background Color, Rounded Corners, and Shadow */}
-      <div style={{ display: "flex" }}>
-        <Space size="middle">
+      {/* Grid Layout for Categories */}
+      <div style={{ width: "100%", marginTop: "20px" }}>
+        <Row gutter={[16, 16]}>
           {expense.expenseCategoryList.length > 0 ? (
             expense.expenseCategoryList.map((category) => (
-              <Card
+              <Col
                 key={category.id}
-                style={{
-                  width: 250,
-                  minHeight: 100,
-                  backgroundColor: "#f0f5ff",
-                  borderRadius: "10px", // Rounded corners
-                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", // Adding shadow
-                }}
-                bordered={true}
-                actions={[
-                  <EditOutlined
-                    key="edit"
-                    style={{ color: "blue" }} // Yellow for edit icon
-                    onClick={() => openEditModal(category)}
-                  />,
-                  <DeleteOutlined
-                    key="delete"
-                    style={{ color: "red" }} // Red for delete icon
-                    onClick={() => handleDeleteExpenseCategory(category.id)}
-                  />,
-                ]}
+                xs={24} sm={12} md={8} lg={6} xl={4} // Responsive grid columns
+                style={{ display: "flex", justifyContent: "center" }}
               >
-                <Card.Meta title={category.name} />
-              </Card>
+                <Card
+                  style={{
+                    width: "100%",
+                    backgroundColor: "#f0f5ff",
+                    borderRadius: "10px", // Rounded corners
+                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", // Adding shadow
+                  }}
+                  bordered={true}
+                  actions={[
+                    <EditOutlined
+                      key="edit"
+                      style={{ color: "blue" }} // Blue for edit icon
+                      onClick={() => openEditModal(category)}
+                    />,
+                    <DeleteOutlined
+                      key="delete"
+                      style={{ color: "red" }} // Red for delete icon
+                      onClick={() => handleDeleteExpenseCategory(category.id)}
+                    />,
+                  ]}
+                >
+                  <Card.Meta title={category.name} />
+                </Card>
+              </Col>
             ))
           ) : (
             <div>No expense categories available.</div>
           )}
-        </Space>
+        </Row>
       </div>
     </div>
   );
