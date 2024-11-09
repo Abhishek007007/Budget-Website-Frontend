@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Table, Tag, Button, Input, Space, Select, Modal, Typography } from "antd";
+import {
+  Table,
+  Tag,
+  Button,
+  Input,
+  Space,
+  Select,
+  Modal,
+  Typography,
+} from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { getTransactions } from "../redux/transactionSlice";
@@ -11,7 +20,9 @@ const { Text } = Typography;
 
 const Transactions = () => {
   const dispatch = useDispatch();
-  const transactions = useSelector((state) => state.transactions.transactionsList);
+  const transactions = useSelector(
+    (state) => state.transactions.transactionsList
+  );
   const loading = useSelector((state) => state.transactions.loading);
   const error = useSelector((state) => state.transactions.error);
 
@@ -36,18 +47,17 @@ const Transactions = () => {
       // Create a HumanMessage with transaction data
       const contents = [
         new HumanMessage({
-          content: `Provide four brief, actionable insights to help improve financial health based on the following transaction data. Focus on spending habits, saving strategies, or income management:\n\n${JSON.stringify(transactions)}`,
-
+          content: `Provide four brief, actionable insights to help improve financial health based on the following transaction data. Focus on spending habits, saving strategies, or income management:\n\n${JSON.stringify(
+            transactions
+          )}`,
         }),
       ];
 
       // Call the model and get the response
       const response = await vision.call(contents);
 
-
-
       setInsights(response.content);
-      
+
       // Set the response as insights
     } catch (error) {
       setInsights("Error retrieving insights. Please try again.");
@@ -95,7 +105,7 @@ const Transactions = () => {
   ];
 
   const data = transactions.map((transaction) => ({
-    key: transaction.id,
+    key: `${transaction.type}${transaction.id}`,
     description: transaction.description,
     amount: transaction.amount,
     date: transaction.date,
@@ -121,7 +131,10 @@ const Transactions = () => {
         </Button>
       </Space>
 
-      <Table columns={columns} dataSource={filteredData.length > 0 ? filteredData : data} />
+      <Table
+        columns={columns}
+        dataSource={filteredData.length > 0 ? filteredData : data}
+      />
 
       <Modal
         title="Transaction Insights"

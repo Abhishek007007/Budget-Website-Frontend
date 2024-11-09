@@ -119,7 +119,9 @@ const CreateBudget = () => {
   const suggestDailyBudget = () => {
     if (currentBudget) {
       const suggestedDailyBudget = currentBudget.budget_limit / 30; // Assuming monthly period
-      message.info(`Suggested Daily Budget: ₹${suggestedDailyBudget.toFixed(2)}`);
+      message.info(
+        `Suggested Daily Budget: ₹${suggestedDailyBudget.toFixed(2)}`
+      );
     }
   };
 
@@ -161,7 +163,10 @@ const CreateBudget = () => {
               <Form.Item
                 label="Budget Name"
                 name="name"
-                rules={[{ required: true, message: "Please enter a budget name" }]}>
+                rules={[
+                  { required: true, message: "Please enter a budget name" },
+                ]}
+              >
                 <Input
                   onChange={(e) => handleInputChange(e, "name")}
                   placeholder="Enter your budget name"
@@ -181,7 +186,7 @@ const CreateBudget = () => {
                 <Select
                   onChange={handlePeriodChange}
                   placeholder="Select period"
-                  initialValue={newBudget.period}
+                  value={newBudget.period}
                 >
                   <Option value="daily">Daily</Option>
                   <Option value="weekly">Weekly</Option>
@@ -193,7 +198,13 @@ const CreateBudget = () => {
               <Form.Item
                 label="Budget Limit"
                 name="budget_limit"
-                rules={[{ required: true, message: "Please enter a valid budget limit" }]}>
+                rules={[
+                  {
+                    required: true,
+                    message: "Please enter a valid budget limit",
+                  },
+                ]}
+              >
                 <Input
                   type="number"
                   onChange={(e) => handleInputChange(e, "budget_limit")}
@@ -202,7 +213,9 @@ const CreateBudget = () => {
               </Form.Item>
             </Col>
           </Row>
-          <Button type="primary" htmlType="submit">Create Budget</Button>
+          <Button type="primary" htmlType="submit">
+            Create Budget
+          </Button>
         </Form>
       )}
 
@@ -222,15 +235,23 @@ const CreateBudget = () => {
                   color: "#1890ff",
                 }}
               >
-                <p style={{ fontSize: "24px", fontWeight: "bold" }}>₹{remainingBalance.toFixed(2)}</p>
+                <p style={{ fontSize: "24px", fontWeight: "bold" }}>
+                  ₹{remainingBalance.toFixed(2)}
+                </p>
               </Card>
             </Col>
 
             <Col span={12}>
               <Card title="Budget Details">
-                <p><strong>Total Limit:</strong> ₹{budgetLimit}</p>
-                <p><strong>Spent:</strong> ₹{totalExpenses}</p>
-                <p><strong>Remaining:</strong> ₹{remainingBalance}</p>
+                <p>
+                  <strong>Total Limit:</strong> ₹{budgetLimit}
+                </p>
+                <p>
+                  <strong>Spent:</strong> ₹{totalExpenses}
+                </p>
+                <p>
+                  <strong>Remaining:</strong> ₹{remainingBalance}
+                </p>
               </Card>
             </Col>
           </Row>
@@ -243,14 +264,16 @@ const CreateBudget = () => {
                 type="circle"
                 percent={percentageSpent}
                 format={(percent) => (
-                  <span style={{ fontSize: '16px' }}>
+                  <span style={{ fontSize: "16px" }}>
                     {`${percent.toFixed(2)}% spent`}
                   </span>
                 )}
                 strokeColor={
-                  percentageSpent <= 50 ? '#52c41a' :
-                  percentageSpent <= 60 ? '#fadb14' :
-                  '#ff4d4f'
+                  percentageSpent <= 50
+                    ? "#52c41a"
+                    : percentageSpent <= 60
+                    ? "#fadb14"
+                    : "#ff4d4f"
                 }
                 width={180}
               />
@@ -269,7 +292,7 @@ const CreateBudget = () => {
           {/* Option to Remove Budget */}
           <Button
             type="danger"
-            style={{ marginTop: "20px", marginLeft: "10px", color: 'white' }}
+            style={{ marginTop: "20px", marginLeft: "10px", color: "white" }}
             onClick={onRemoveBudget}
           >
             Remove Budget
@@ -277,12 +300,12 @@ const CreateBudget = () => {
 
           {/* Button to Suggest Daily Budget */}
           <Button
-              type="dashed"
-              style={{ marginTop: "20px", marginLeft: "10px" }}
-              onClick={suggestDailyBudget}
-            >
-              Suggest Daily Budget
-            </Button>
+            type="dashed"
+            style={{ marginTop: "20px", marginLeft: "10px" }}
+            onClick={suggestDailyBudget}
+          >
+            Suggest Daily Budget
+          </Button>
         </>
       )}
 
@@ -304,7 +327,10 @@ const CreateBudget = () => {
               <Form.Item
                 label="Budget Name"
                 name="name"
-                rules={[{ required: true, message: "Please enter a budget name" }]}>
+                rules={[
+                  { required: true, message: "Please enter a budget name" },
+                ]}
+              >
                 <Input
                   onChange={(e) => handleInputChange(e, "name")}
                   placeholder="Enter your budget name"
@@ -336,7 +362,13 @@ const CreateBudget = () => {
               <Form.Item
                 label="Budget Limit"
                 name="budget_limit"
-                rules={[{ required: true, message: "Please enter a valid budget limit" }]}>
+                rules={[
+                  {
+                    required: true,
+                    message: "Please enter a valid budget limit",
+                  },
+                ]}
+              >
                 <Input
                   type="number"
                   onChange={(e) => handleInputChange(e, "budget_limit")}
@@ -355,4 +387,3 @@ const CreateBudget = () => {
 };
 
 export default CreateBudget;
-
