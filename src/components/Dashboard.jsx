@@ -3,7 +3,6 @@ import { Row, Col, Card, Table, Typography, Tag } from "antd";
 import ApexCharts from "react-apexcharts";
 import { useSelector, useDispatch } from "react-redux";
 import { getTransactions } from "../redux/transactionSlice";
-import { getBudget } from "../redux/budgetSlice";
 const { Title } = Typography;
 
 function Dashboard() {
@@ -269,8 +268,8 @@ const getSourceWiseIncome = (transactions) => {
                   bordered={false}
                   style={{
                     borderRadius: "20px",
-                    backgroundColor: "#fff7e6", // Light yellow for Balance
-                    color: "#faad14", // Warning color (Ant Design Light)
+                    backgroundColor: "#fff7e6",
+                    color: "#faad14",
                   }}
                 >
                   <p style={{ fontSize: "20px", fontWeight: "bold" }}>
@@ -355,6 +354,7 @@ const getSourceWiseIncome = (transactions) => {
             </Card>
           </Col>
 
+          {/* Right column - Transactions Table */}
           <Col span={8}>
             <Card
               title="Recent Transactions"

@@ -1,52 +1,70 @@
 /* dashboard.css */
-body { /* Light background */
-    color: #000000; 
+body {
+  /* Light background */
+  color: #000000;
 }
 
 .ant-layout-sider {
-    background: #2f54eb; /* Blue background for sidebar */
+  background: #2f54eb; /* Blue background for sidebar */
 }
 
 .ant-layout-header {
-    background: #2f54eb; /* Blue header background */
-    color: #ffffff; /* White text in the header */
+  background: #2f54eb; /* Blue header background */
+  color: #ffffff; /* White text in the header */
 }
 
 .ant-card {
-    background: rgba(255, 255, 255, 0.8); /* Slightly transparent white background for cards */
-    border: 1px solid #ffffff; /* Light border for cards */
+  background: rgba(
+    255,
+    255,
+    255,
+    0.8
+  ); /* Slightly transparent white background for cards */
+  border: 1px solid #ffffff; /* Light border for cards */
 }
 
 .statistic-title {
-    color: #000000; /* Black text for titles */
+  color: #000000; /* Black text for titles */
 }
 
 .ant-progress-circle {
-    color: #2f54eb; /* Blue color for the progress circle */
+  color: #2f54eb; /* Blue color for the progress circle */
 }
 
 /* Additional styling for components */
 .ant-menu-item-selected {
-    background: rgba(244, 244, 244, 0.275); /* Light semi-transparent background for selected menu item */
+  background: rgba(
+    244,
+    244,
+    244,
+    0.275
+  ); /* Light semi-transparent background for selected menu item */
 }
 
 .ant-menu-dark {
-    background: #2f54eb; /* Blue background for menu */
+  background: #2f54eb; /* Blue background for menu */
 }
 
 .ant-menu-item {
-    color: #ffffff; /* White text for menu items */
+  color: #ffffff; /* White text for menu items */
 }
 
 .ant-avatar {
-    background-color: #ffffff; /* Avatar background color */
-    color: #2f54eb; /* Avatar text color */
+  background-color: #ffffff; /* Avatar background color */
+  color: #2f54eb; /* Avatar text color */
 }
 
 /* Button styles */
 
-
 .ant-btn-danger {
-    background-color: #ff4d4f; /* Danger button color */
-    border-color: #ff4d4f; /* Danger button border color */
+  background-color: #ff4d4f; /* Danger button color */
+  border-color: #ff4d4f; /* Danger button border color */
+  color: white;
+}
+
+.ant-btn-danger:disabled {
+  opacity: 0.5;
+}
+.ant-btn-primary:disabled {
+  opacity: 0.75;
 }

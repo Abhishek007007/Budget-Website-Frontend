@@ -52,7 +52,9 @@ export const getGroupDetails = createAsyncThunk(
   "groups/getGroupDetails",
   async (groupId, { rejectWithValue }) => {
     try {
-      const response = await axiosPrivate.get(`/api/v1/finance/group/${groupId}/`);
+      const response = await axiosPrivate.get(
+        `/api/v1/finance/group/${groupId}/`
+      );
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
@@ -99,9 +101,7 @@ export const getExpenses = createAsyncThunk(
   "expenses/getExpenses",
   async (groupId, { rejectWithValue }) => {
     try {
-      const response = await axiosPrivate.get(
-        `/api/v1/finance/groupexpense/`
-      );
+      const response = await axiosPrivate.get(`/api/v1/finance/groupexpense/`);
       return { groupId, expenses: response.data };
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
@@ -118,8 +118,8 @@ export const createExpense = createAsyncThunk(
       const response = await axiosPrivate.post(
         `/api/v1/finance/groupexpense/`, // Your endpoint
         {
-          group: groupId,          // Assuming the 'group' field needs the group's ID
-          ...expenseData           // Spreading the expense data (title, amount, description, etc.)
+          group: groupId, // Assuming the 'group' field needs the group's ID
+          ...expenseData, // Spreading the expense data (title, amount, description, etc.)
         }
       );
       return { groupId, expense: response.data }; // Returning the groupId and the created expense
@@ -129,12 +129,11 @@ export const createExpense = createAsyncThunk(
   }
 );
 
-
 export const deleteExpense = createAsyncThunk(
   "expenses/deleteExpense",
-  async ({expenseId }, { rejectWithValue }) => {
+  async (expenseId, { rejectWithValue }) => {
     try {
-      console.log(expenseId)
+      console.log(expenseId);
       await axiosPrivate.delete(`/api/v1/finance/groupexpense/${expenseId}/`);
       return { expenseId }; // Returning groupId and expenseId to remove it from state
     } catch (error) {
@@ -143,7 +142,7 @@ export const deleteExpense = createAsyncThunk(
     }
   }
 );
-  
+
 const groupsSlice = createSlice({
   name: "groups",
   initialState: {
@@ -197,10 +196,6 @@ const groupsSlice = createSlice({
       .addCase(addGroupMember.fulfilled, (state, { payload }) => {
         state.loading = false;
         state.success = true;
-        const group = state.groupsList.find((g) => g.id === payload.groupId);
-        if (group) {
-          group.members.push(payload.user);
-        }
         state.error = null;
       })
       .addCase(addGroupMember.rejected, (state, { payload }) => {
@@ -216,12 +211,6 @@ const groupsSlice = createSlice({
       .addCase(removeGroupMember.fulfilled, (state, { payload }) => {
         state.loading = false;
         state.success = true;
-        const group = state.groupsList.find((g) => g.id === payload.groupId);
-        if (group) {
-          group.members = group.members.filter(
-            (member) => member.username !== payload.username
-          );
-        }
         state.error = null;
       })
       .addCase(removeGroupMember.rejected, (state, { payload }) => {
@@ -268,7 +257,6 @@ const groupsSlice = createSlice({
       })
       .addCase(getExpenses.fulfilled, (state, { payload }) => {
         state.loading = false;
-        state.expenses[payload.groupId] = payload.expenses; // Store expenses by groupId
         state.error = null;
       })
       .addCase(getExpenses.rejected, (state, { payload }) => {
