@@ -34,6 +34,7 @@ function IncomeItems() {
     newForm.source = income.incomeSourceList[form.source].id;
     dispatch(postIncomeItems(newForm));
     setForm(ItemForm);
+    console.log(newForm)
     setIsAddingItem(false);
   }
 

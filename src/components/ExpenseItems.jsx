@@ -40,6 +40,7 @@ function ExpenseItems() {
     const newForm = { ...form };
     newForm.category = expense.expenseCategoryList[form.category].id;
     dispatch(postExpenseItem(newForm));
+    console.log(newForm)
     setForm(ItemForm);
     setIsAddingItem(false);
   }
