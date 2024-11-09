@@ -185,7 +185,7 @@ function ExpenseCategory() {
                 actions={[
                   <EditOutlined
                     key="edit"
-                    style={{ color: "yellow" }} // Yellow for edit icon
+                    style={{ color: "blue" }} // Yellow for edit icon
                     onClick={() => openEditModal(category)}
                   />,
                   <DeleteOutlined

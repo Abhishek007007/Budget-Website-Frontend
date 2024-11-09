@@ -115,6 +115,14 @@ const CreateBudget = () => {
     setIsModalVisible(false);
   };
 
+  // Handle Suggest Daily Budget functionality
+  const suggestDailyBudget = () => {
+    if (currentBudget) {
+      const suggestedDailyBudget = currentBudget.budget_limit / 30; // Assuming monthly period
+      message.info(`Suggested Daily Budget: ₹${suggestedDailyBudget.toFixed(2)}`);
+    }
+  };
+
   if (loading) {
     return (
       <div
@@ -266,30 +274,37 @@ const CreateBudget = () => {
           >
             Remove Budget
           </Button>
+
+          {/* Button to Suggest Daily Budget */}
+          <Button
+              type="dashed"
+              style={{ marginTop: "20px", marginLeft: "10px" }}
+              onClick={suggestDailyBudget}
+            >
+              Suggest Daily Budget
+            </Button>
         </>
       )}
 
-      {/* Modal for Editing Budget */}
+      {/* Edit Budget Modal */}
       <Modal
         title="Edit Budget"
         visible={isModalVisible}
         onCancel={handleModalCancel}
-        onOk={form.submit} // Trigger form submission on "OK" button
-        okText="Save"
-        cancelText="Cancel"
+        footer={null}
       >
         <Form
           form={form}
           onFinish={onCreateBudget}
           layout="vertical"
+          initialValues={newBudget}
         >
           <Row gutter={16}>
             <Col span={24}>
               <Form.Item
                 label="Budget Name"
                 name="name"
-                initialValue={newBudget.name}
-                rules={[{ required: true, message: "Please enter a budget name" }]} >
+                rules={[{ required: true, message: "Please enter a budget name" }]}>
                 <Input
                   onChange={(e) => handleInputChange(e, "name")}
                   placeholder="Enter your budget name"
@@ -297,7 +312,7 @@ const CreateBudget = () => {
               </Form.Item>
             </Col>
             <Col span={24}>
-              <Form.Item label="Description" name="description" initialValue={newBudget.description}>
+              <Form.Item label="Description" name="description">
                 <Input
                   onChange={(e) => handleInputChange(e, "description")}
                   placeholder="Enter a description"
@@ -305,8 +320,12 @@ const CreateBudget = () => {
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item label="Period" name="period" initialValue={newBudget.period}>
-                <Select onChange={handlePeriodChange} placeholder="Select period">
+              <Form.Item label="Period" name="period">
+                <Select
+                  onChange={handlePeriodChange}
+                  placeholder="Select period"
+                  initialValue={newBudget.period}
+                >
                   <Option value="daily">Daily</Option>
                   <Option value="weekly">Weekly</Option>
                   <Option value="monthly">Monthly</Option>
@@ -317,7 +336,6 @@ const CreateBudget = () => {
               <Form.Item
                 label="Budget Limit"
                 name="budget_limit"
-                initialValue={newBudget.budget_limit}
                 rules={[{ required: true, message: "Please enter a valid budget limit" }]}>
                 <Input
                   type="number"
@@ -327,6 +345,9 @@ const CreateBudget = () => {
               </Form.Item>
             </Col>
           </Row>
+          <Button type="primary" htmlType="submit">
+            Update Budget
+          </Button>
         </Form>
       </Modal>
     </div>
@@ -334,3 +355,4 @@ const CreateBudget = () => {
 };
 
 export default CreateBudget;
+

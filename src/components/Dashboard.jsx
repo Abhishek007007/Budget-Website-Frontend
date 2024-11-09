@@ -16,6 +16,13 @@ function Dashboard() {
 
   const [totalIncome, setTotalIncome] = useState(0);
   const [totalExpense, setTotalExpense] = useState(0);
+  const [pieChartData, setPieChartData] = useState({
+    categorySeries: [],
+    categoryLabels: [],
+    sourceSeries: [],
+    sourceLabels: [],
+  });
+  
   const [chartData, setChartData] = useState({
     series: [],
     options: {
@@ -61,6 +68,45 @@ function Dashboard() {
     },
   });
 
+  // Helper function to group and sum expenses by category
+const getCategoryWiseExpenses = (transactions) => {
+  const categoryExpenses = {};
+
+  transactions.forEach((transaction) => {
+    if (transaction.type === "expense" && transaction.category) {
+      const categoryName = transaction.category.name; // Assuming transaction has a category field
+      const amount = parseFloat(transaction.amount.replace("₹", "").replace(",", ""));
+
+      if (!categoryExpenses[categoryName]) {
+        categoryExpenses[categoryName] = 0;
+      }
+      categoryExpenses[categoryName] += amount;
+    }
+  });
+
+  return categoryExpenses;
+};
+
+// Helper function to group and sum income by source
+const getSourceWiseIncome = (transactions) => {
+  const sourceIncome = {};
+
+  transactions.forEach((transaction) => {
+    if (transaction.type === "income" && transaction.source) {
+      const sourceName = transaction.source.source_name; // Assuming transaction has a source field
+      const amount = parseFloat(transaction.amount.replace("₹", "").replace(",", ""));
+
+      if (!sourceIncome[sourceName]) {
+        sourceIncome[sourceName] = 0;
+      }
+      sourceIncome[sourceName] += amount;
+    }
+  });
+
+  return sourceIncome;
+};
+
+
   // Helper function to format the date to YYYY-MM-DD
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -84,44 +130,55 @@ function Dashboard() {
     const lastFiveDays = getLastFiveDays();
     const dailyIncome = {};
     const dailyExpense = {};
-
+  
     transactions.forEach((transaction) => {
       const transactionDate = formatDate(transaction.date); // Assuming transaction has a date field
       if (lastFiveDays.includes(transactionDate)) {
         const amount = parseFloat(
           transaction.amount.replace("₹", "").replace(",", "")
         );
-
+  
         if (transaction.type === "income") {
-          if (!dailyIncome[transactionDate]) dailyIncome[transactionDate] = 0;
-          dailyIncome[transactionDate] += amount;
+          dailyIncome[transactionDate] = (dailyIncome[transactionDate] || 0) + amount;
         } else if (transaction.type === "expense") {
-          if (!dailyExpense[transactionDate]) dailyExpense[transactionDate] = 0;
-          dailyExpense[transactionDate] += amount;
+          dailyExpense[transactionDate] = (dailyExpense[transactionDate] || 0) + amount;
         }
       }
     });
-
+  
     // Prepare data for the chart
     const incomeData = lastFiveDays.map((day) => dailyIncome[day] || 0);
     const expenseData = lastFiveDays.map((day) => dailyExpense[day] || 0);
-
+  
     return {
       categories: lastFiveDays,
       incomeData,
       expenseData,
     };
   };
+  
 
   useEffect(() => {
     dispatch(getTransactions());
     dispatch(getBudget());
   }, [dispatch]);
-
   useEffect(() => {
     if (transactions.length > 0) {
-      const { categories, incomeData, expenseData } =
-        getDailyData(transactions);
+      const { categories, incomeData, expenseData } = getDailyData(transactions);
+  
+      // Extract data for pie charts
+      const categoryExpenses = getCategoryWiseExpenses(transactions);
+      const sourceIncome = getSourceWiseIncome(transactions);
+  
+      // Prepare data for category-wise expense pie chart
+      const categoryNames = Object.keys(categoryExpenses);
+      const categoryValues = Object.values(categoryExpenses);
+  
+      // Prepare data for source-wise income pie chart
+      const sourceNames = Object.keys(sourceIncome);
+      const sourceValues = Object.values(sourceIncome);
+  
+      // Update state with chart data
       setChartData((prevState) => ({
         ...prevState,
         series: [
@@ -142,7 +199,15 @@ function Dashboard() {
           },
         },
       }));
-
+  
+      // Set pie chart data for categories and sources
+      setPieChartData({
+        categorySeries: categoryValues,
+        categoryLabels: categoryNames,
+        sourceSeries: sourceValues,
+        sourceLabels: sourceNames,
+      });
+  
       // Calculate total income and total expense
       const totalIncomeValue = transactions
         .filter((transaction) => transaction.type === "income")
@@ -152,7 +217,7 @@ function Dashboard() {
             parseFloat(transaction.amount.replace("₹", "").replace(",", "")),
           0
         );
-
+  
       const totalExpenseValue = transactions
         .filter((transaction) => transaction.type === "expense")
         .reduce(
@@ -161,11 +226,13 @@ function Dashboard() {
             parseFloat(transaction.amount.replace("₹", "").replace(",", "")),
           0
         );
-
+  
       setTotalIncome(totalIncomeValue);
       setTotalExpense(totalExpenseValue);
     }
-  }, [transactions]); // Re-run when transactions data changes
+  }, [transactions]);
+   // Re-run when transactions data changes
+   // Re-run when transactions data changes
 
   // Columns for the transactions table
   const columns = [
@@ -241,8 +308,8 @@ function Dashboard() {
               bordered={false}
               style={{
                 borderRadius: "20px",
-                backgroundColor: "#fff2e8", // Light red for Expense
-                color: "#ff4d4f", // Error color (Ant Design Light)
+                backgroundColor: "#fff2e8", 
+                color: "#ff4d4f",
               }}
             >
               <p style={{ fontSize: "20px", fontWeight: "bold" }}>
@@ -284,7 +351,7 @@ function Dashboard() {
                 options={chartData.options}
                 series={chartData.series}
                 type="line"
-                height={265} // Chart height is fixed, no scrolling
+                height={325}
               />
             </Card>
           </Col>
@@ -310,6 +377,64 @@ function Dashboard() {
             </Card>
           </Col>
         </Row>
+        <Row gutter={16} style={{ marginTop: "20px" }}>
+  {/* Left column - Pie chart for category-wise expenses */}
+  <Col span={12}>
+    <Card
+      title="Category-wise Expenses"
+      bordered={false}
+      style={{
+        borderRadius: "20px",
+        boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
+        marginBottom: "20px",
+      }}
+    >
+      <ApexCharts
+        options={{
+          labels: pieChartData.categoryLabels,
+          chart: {
+            type: "pie",
+          },
+          legend: {
+            position: "bottom",
+          },
+        }}
+        series={pieChartData.categorySeries}
+        type="pie"
+        height={300}
+      />
+    </Card>
+  </Col>
+
+  {/* Right column - Pie chart for source-wise income */}
+  <Col span={12}>
+    <Card
+      title="Source-wise Income"
+      bordered={false}
+      style={{
+        borderRadius: "20px",
+        boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
+        marginBottom: "20px",
+      }}
+    >
+      <ApexCharts
+        options={{
+          labels: pieChartData.sourceLabels,
+          chart: {
+            type: "pie",
+          },
+          legend: {
+            position: "bottom",
+          },
+        }}
+        series={pieChartData.sourceSeries}
+        type="pie"
+        height={300}
+      />
+    </Card>
+  </Col>
+</Row>
+
       </div>
     </div>
   );
