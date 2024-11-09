@@ -131,9 +131,9 @@ const FinancialGoals = () => {
 
   return (
     <div style={{ margin: "20px" }}>
-      <h2>
+      <h5>
         {isEditing ? "Edit Financial Goal" : "Create a New Financial Goal"}
-      </h2>
+      </h5>
 
       <Form
         form={form}
@@ -279,57 +279,91 @@ const FinancialGoals = () => {
       </Modal>
 
       <div style={{ marginTop: "20px" }}>
-        <h2>Your Financial Goals</h2>
         {loading ? (
           <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} />
         ) : (
           goals.map((goal, idx) => (
-            <Card key={idx} style={{ marginBottom: "10px" }}>
-              <Row className="d-flex gap-4">
-                <Col>
-                  <h3>{goal.name}</h3>
-                  <p>{goal.description}</p>
-                  <p>Target Amount: ${goal.target_amount}</p>
-                  <p>Current Amount: ${goal.current_amount}</p>
-
-                  <Button type="link" onClick={() => openEditModal(goal)}>
+            <Card
+              key={idx}
+              style={{
+                marginBottom: "20px",
+                padding: "5px",
+                backgroundColor: "#fafafa", // light background color
+                boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.2)", // subtle shadow
+                borderRadius: "20px",
+              }}
+            >
+              <Row gutter={16} align="middle">
+                <Col span={16}>
+                  <h5 style={{ color: "#2f54eb" }}>{goal.name}</h5>
+                  <p style={{ color: "#595959" }}>{goal.description}</p>
+                  <p style={{ color: "#595959" }}>Target Amount: ₹{goal.target_amount}</p>
+                  <p style={{ color: "#595959" }}>Current Amount: ₹{goal.current_amount}</p>
+                 
+                  <Button
+                     type="primary"
+          
+                    style={{
+                      backgroundColor: "#2f54eb",
+                      borderColor: "#2f54eb",
+                      color: "#fff",
+                      borderRadius: "4px",
+                    }}
+                    onClick={() => openEditModal(goal)}
+          
+                  >
                     Edit
                   </Button>
-
-                  <Button type="link" danger onClick={() => onRemoveGoal(goal)}>
+            
+                  <Button
+                    type="primary"
+                    danger
+                    style={{ marginLeft: "16px", backgroundColor: "#f5222d" }}
+                    onClick={() => onRemoveGoal(goal)}
+                  >
                     Delete
                   </Button>
                 </Col>
-
-                <Col className="d-flex flex-column gap-3">
-                  <Row className="d-flex justify-content-center">
-                    <Button onClick={() => openContributionModal(goal)}>
+            
+                <Col span={8} className="d-flex flex-column gap-3">
+                  <Row justify="center" style={{ marginBottom: "10px" }}>
+                    <Button
+                      type="primary"
+                      onClick={() => openContributionModal(goal)}
+                      style={{
+                        backgroundColor: "#2f54eb",
+                        borderColor: "#2f54eb",
+                        color: "#fff",
+                        borderRadius: "4px",
+                      }}
+                    >
                       Make Contribution
                     </Button>
                   </Row>
-                  <Row className="d-flex justify-content-center">
+            
+                  <Row justify="center">
                     <Progress
                       type="circle"
                       percent={(goal.current_amount / goal.target_amount) * 100}
                       format={(percent) => (
-                        <span style={{ fontSize: "12px" }}>
+                        <span style={{ fontSize: "12px", color: "#595959" }}>
                           {`${percent.toFixed(2)}%`}
                         </span>
                       )}
                       strokeColor={
                         (goal.current_amount / goal.target_amount) * 100 <= 50
                           ? "#ff4d4f" // Red if percentage is 50 or below
-                          : (goal.current_amount / goal.target_amount) * 100 <=
-                            60
+                          : (goal.current_amount / goal.target_amount) * 100 <= 60
                           ? "#fadb14" // Yellow if percentage is between 50 and 60
                           : "#52c41a" // Green if percentage is above 60
                       }
-                      width={100}
+                      width={80}
                     />
                   </Row>
                 </Col>
               </Row>
             </Card>
+            
           ))
         )}
       </div>
