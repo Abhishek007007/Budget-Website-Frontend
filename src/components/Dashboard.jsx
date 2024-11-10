@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { getTransactions } from "../redux/transactionSlice";
 import { getBudget } from "../redux/budgetSlice";
 import WeekViewCalendar from "./WeekViewCalendar";
+import { motion } from "framer-motion"; //
 const { Title } = Typography;
 
 function Dashboard() {
@@ -358,7 +359,13 @@ function Dashboard() {
   }, [transactions]);
 
   return (
-    <div style={{ backgroundColor: "#ffffff", height: "100vh" }}>
+    <motion.div
+    initial={{ opacity: 0, y: 50 }} // Start with opacity 0 and 50px down
+    animate={{ opacity: 1, y: 0 }}  // Animate to full opacity and original position
+    exit={{ opacity: 0, y: 50 }}    // Fade out and move down when exiting
+    transition={{ duration: 0.4 }}   // Duration of the animation
+    style={{ backgroundColor: "#ffffff", height: "100vh" }}
+     >
       <div className="w-100 p-3">
         <Row gutter={16}>
           {budget.budgets.length !== 0 ? (
@@ -568,7 +575,7 @@ function Dashboard() {
           </Col> */}
         </Row>
       </div>
-    </div>
+    </motion.div>
   );
 }
 

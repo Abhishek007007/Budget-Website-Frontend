@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getTransactions } from "../redux/transactionSlice";
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai"; // Import Gemini SDK
 import { HumanMessage } from "@langchain/core/messages"; // Import HumanMessage to format requests
+import { motion } from "framer-motion"; // Import motion
 
 const { Option } = Select;
 const { Text } = Typography;
@@ -150,44 +151,81 @@ const Transactions = () => {
   };
 
   return (
-    <div>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
       <br />
       <Space style={{ marginBottom: 16 }}>
-        <Input
-          placeholder="Search"
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-          prefix={<SearchOutlined />}
-        />
-        <Select
-          value={categoryFilter}
-          onChange={(value) => setCategoryFilter(value)}
-          style={{ width: 120 }}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
         >
-          <Option value="all">All</Option>
-          <Option value="income">Income</Option>
-          <Option value="expense">Expense</Option>
-        </Select>
-        <RangePicker
-          style={{ marginLeft: 10 }}
-          onChange={handleDateRangeChange}
-          format="YYYY-MM-DD"
-        />
-        <Button type="primary" onClick={handleShowInsights}>
-          Show Insights
-        </Button>
+          <Input
+            placeholder="Search"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            prefix={<SearchOutlined />}
+          />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          <Select
+            value={categoryFilter}
+            onChange={(value) => setCategoryFilter(value)}
+            style={{ width: 120 }}
+          >
+            <Option value="all">All</Option>
+            <Option value="income">Income</Option>
+            <Option value="expense">Expense</Option>
+          </Select>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+        >
+          <RangePicker
+            style={{ marginLeft: 10 }}
+            onChange={handleDateRangeChange}
+            format="YYYY-MM-DD"
+          />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+        >
+          <Button type="primary" onClick={handleShowInsights}>
+            Show Insights
+          </Button>
+        </motion.div>
       </Space>
 
-      <Table
-        columns={columns}
-        dataSource={data}
-        pagination={{
-          current: pagination.current,
-          pageSize: pagination.pageSize,
-          total: filteredData.length,
-          onChange: handlePageChange,
-        }}
-      />
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.5 }}
+      >
+        <Table
+          columns={columns}
+          dataSource={data}
+          pagination={{
+            current: pagination.current,
+            pageSize: pagination.pageSize,
+            total: filteredData.length,
+            onChange: handlePageChange,
+          }}
+        />
+      </motion.div>
 
       <Modal
         title="Transaction Insights"
@@ -195,15 +233,21 @@ const Transactions = () => {
         onCancel={() => setIsModalVisible(false)}
         footer={null}
       >
-        <Text>
-          {insights || (
-            <Spin
-              indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />}
-            />
-          )}
-        </Text>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <Text>
+            {insights || (
+              <Spin
+                indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />}
+              />
+            )}
+          </Text>
+        </motion.div>
       </Modal>
-    </div>
+    </motion.div>
   );
 };
 
