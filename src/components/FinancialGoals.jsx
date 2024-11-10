@@ -20,7 +20,10 @@ import {
   updateGoal,
 } from "./../redux/financialGoalsSlice";
 import { LoadingOutlined } from "@ant-design/icons";
-import { getExpenseCategoryList, getExpenseItemsList } from "../redux/expenseSlice";
+import {
+  getExpenseCategoryList,
+  getExpenseItemsList,
+} from "../redux/expenseSlice";
 
 const { Option } = Select;
 
@@ -74,8 +77,8 @@ const FinancialGoals = () => {
         await dispatch(
           updateGoal({ goalId: currentGoal.id, updatedData: newGoal })
         );
-        dispatch(getExpenseCategoryList())
-        dispatch(getExpenseItemsList())
+        dispatch(getExpenseCategoryList());
+        dispatch(getExpenseItemsList());
         message.success("Goal updated successfully");
         setIsEditing(false);
         setCurrentGoal(null);
@@ -300,12 +303,15 @@ const FinancialGoals = () => {
                 <Col span={16}>
                   <h5 style={{ color: "#2f54eb" }}>{goal.name}</h5>
                   <p style={{ color: "#595959" }}>{goal.description}</p>
-                  <p style={{ color: "#595959" }}>Target Amount: ₹{goal.target_amount}</p>
-                  <p style={{ color: "#595959" }}>Current Amount: ₹{goal.current_amount}</p>
-                 
+                  <p style={{ color: "#595959" }}>
+                    Target Amount: ₹{goal.target_amount}
+                  </p>
+                  <p style={{ color: "#595959" }}>
+                    Current Amount: ₹{goal.current_amount}
+                  </p>
+
                   <Button
-                     type="primary"
-          
+                    type="primary"
                     style={{
                       backgroundColor: "#2f54eb",
                       borderColor: "#2f54eb",
@@ -313,11 +319,10 @@ const FinancialGoals = () => {
                       borderRadius: "4px",
                     }}
                     onClick={() => openEditModal(goal)}
-          
                   >
                     Edit
                   </Button>
-            
+
                   <Button
                     type="primary"
                     danger
@@ -327,7 +332,7 @@ const FinancialGoals = () => {
                     Delete
                   </Button>
                 </Col>
-            
+
                 <Col span={8} className="d-flex flex-column gap-3">
                   <Row justify="center" style={{ marginBottom: "10px" }}>
                     <Button
@@ -343,7 +348,7 @@ const FinancialGoals = () => {
                       Make Contribution
                     </Button>
                   </Row>
-            
+
                   <Row justify="center">
                     <Progress
                       type="circle"
@@ -356,7 +361,8 @@ const FinancialGoals = () => {
                       strokeColor={
                         (goal.current_amount / goal.target_amount) * 100 <= 50
                           ? "#ff4d4f" // Red if percentage is 50 or below
-                          : (goal.current_amount / goal.target_amount) * 100 <= 60
+                          : (goal.current_amount / goal.target_amount) * 100 <=
+                            60
                           ? "#fadb14" // Yellow if percentage is between 50 and 60
                           : "#52c41a" // Green if percentage is above 60
                       }
@@ -366,7 +372,6 @@ const FinancialGoals = () => {
                 </Col>
               </Row>
             </Card>
-            
           ))
         )}
       </div>

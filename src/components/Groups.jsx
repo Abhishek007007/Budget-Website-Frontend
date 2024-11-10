@@ -24,8 +24,14 @@ import {
   Col,
   Table,
 } from "antd";
-import { DeleteOutlined, PlusOutlined, UserOutlined } from "@ant-design/icons";
+import {
+  DeleteOutlined,
+  PlusOutlined,
+  UserOutlined,
+  MessageOutlined,
+} from "@ant-design/icons";
 import authSlice from "../redux/authSlice";
+import ChatModal from "./GroupChatModal";
 
 const { Panel } = Collapse;
 
@@ -47,6 +53,8 @@ const Groups = () => {
   const [newMemberUsername, setNewMemberUsername] = useState("");
   const [newExpenseDescription, setNewExpenseDescription] = useState("");
   const [newExpenseAmount, setNewExpenseAmount] = useState("");
+
+  const [groupChat, setGroupChat] = useState("");
 
   useEffect(() => {
     dispatch(getGroups());
@@ -293,70 +301,88 @@ const Groups = () => {
       ) : (
         <Collapse bordered={false} expandIconPosition="right">
           {groupsList.map((group) => (
-            <Panel
-              header={group.name}
-              key={group.id}
-              extra={
-                <>
-                  <Button
-                    type="primary"
-                    icon={<UserOutlined />}
-                    onClick={() => openMembersModal(group)}
-                    style={{ marginRight: "10px" }}
-                    disabled={loading}
-                  >
-                    Members
-                  </Button>
-                  <Button
-                    type="primary"
-                    icon={<PlusOutlined />}
-                    onClick={() => openExpenseModal(group)}
-                    style={{ marginRight: "10px" }}
-                    disabled={loading}
-                  >
-                    Add Expense
-                  </Button>
-                  <Button
-                    type="primary"
-                    danger
-                    icon={<DeleteOutlined />}
-                    onClick={() => handleDelete(group.id)}
-                    disabled={loading || user.username !== group.admin}
-                  >
-                    Delete
-                  </Button>
-                </>
-              }
-            >
-              <Card bordered={false} style={{ marginBottom: "20px" }}>
-                <p>
-                  <strong>Group Information:</strong>
-                </p>
-                <p>Members: {group.members.length}</p>
-                <p>Expenses: {group.expenses?.length || 0}</p>
+            <>
+              <ChatModal
+                groupId={group.id}
+                selectedChat={groupChat}
+                onClose={() => {
+                  setGroupChat("");
+                }}
+              />
+              <Panel
+                header={group.name}
+                key={group.id}
+                extra={
+                  <>
+                    <Button
+                      type="primary"
+                      icon={<UserOutlined />}
+                      onClick={() => openMembersModal(group)}
+                      style={{ marginRight: "10px" }}
+                      disabled={loading}
+                    >
+                      Members
+                    </Button>
+                    <Button
+                      type="primary"
+                      icon={<PlusOutlined />}
+                      onClick={() => openExpenseModal(group)}
+                      style={{ marginRight: "10px" }}
+                      disabled={loading}
+                    >
+                      Add Expense
+                    </Button>
+                    <Button
+                      type="primary"
+                      icon={<MessageOutlined />}
+                      onClick={() => setGroupChat(group.id)}
+                      style={{ marginRight: "10px" }}
+                      disabled={loading}
+                    >
+                      Chat
+                    </Button>
+                    <Button
+                      type="primary"
+                      danger
+                      icon={<DeleteOutlined />}
+                      onClick={() => handleDelete(group.id)}
+                      disabled={loading || user.username !== group.admin}
+                    >
+                      Delete
+                    </Button>
+                  </>
+                }
+              >
+                <Card bordered={false} style={{ marginBottom: "20px" }}>
+                  <p>
+                    <strong>Group Information:</strong>
+                  </p>
+                  <p>Members: {group.members.length}</p>
+                  <p>Expenses: {group.expenses?.length || 0}</p>
 
-                <Collapse bordered={false} style={{ marginTop: "20px" }}>
-                  <Panel header="Expenses" key="1">
-                    {group.expenses?.length > 0 ? (
-                      <Table
-                        columns={expenseColumns}
-                        dataSource={group.expenses.map((expense) => ({
-                          key: expense.id,
-                          title: expense.title,
-                          description: expense.description,
-                          amount: expense.amount,
-                          date: expense.date,
-                          action: expense,
-                        }))}
-                        pagination={true}
-                      />
-                    ) : (
-                      <p>No expenses added yet.</p>
-                    )}
-                  </Panel>
-                </Collapse>
-              </Card>
-            </Panel>
+                  <Collapse bordered={false} style={{ marginTop: "20px" }}>
+                    <Panel header="Expenses" key="1">
+                      {group.expenses?.length > 0 ? (
+                        <Table
+                          columns={expenseColumns}
+                          dataSource={group.expenses.map((expense) => ({
+                            key: expense.id,
+                            title: expense.title,
+                            description: expense.description,
+                            amount: expense.amount,
+                            date: expense.date,
+                            action: expense,
+                          }))}
+                          pagination={true}
+                        />
+                      ) : (
+                        <p>No expenses added yet.</p>
+                      )}
+                    </Panel>
+                  </Collapse>
+                </Card>
+              </Panel>
+            </>
           ))}
         </Collapse>
       )}
