@@ -11,7 +11,8 @@ import {
   DatePicker,
   Spin,
 } from "antd";
-import { LoadingOutlined, SearchOutlined } from "@ant-design/icons";
+import loginVideo from '../assets/MicrosoftTeams-video (1).mp4'
+import { LoadingOutlined, MessageFilled, RobotFilled, SearchOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { getTransactions } from "../redux/transactionSlice";
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai"; // Import Gemini SDK
@@ -205,7 +206,7 @@ const Transactions = () => {
           transition={{ duration: 0.5, delay: 0.4 }}
         >
           <Button type="primary" onClick={handleShowInsights}>
-            Show Insights
+            <MessageFilled/>  AI Insights
           </Button>
         </motion.div>
       </Space>
@@ -228,25 +229,31 @@ const Transactions = () => {
       </motion.div>
 
       <Modal
-        title="Transaction Insights"
-        visible={isModalVisible}
-        onCancel={() => setIsModalVisible(false)}
-        footer={null}
-      >
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          <Text>
-            {insights || (
-              <Spin
-                indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />}
-              />
-            )}
-          </Text>
-        </motion.div>
-      </Modal>
+  title="Transaction Insights"
+  visible={isModalVisible}
+  onCancel={() => setIsModalVisible(false)}
+  footer={null}
+>
+  <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ duration: 0.5 }}
+  >
+    <div className="text-center">
+      {!insights ? (
+        <>
+          <p>Fetching insights...</p>
+          <video className="w-50" autoPlay loop muted>
+            <source src={loginVideo} type="video/mp4" />
+          </video>
+        </>
+      ) : (
+        <Text>{insights}</Text>
+      )}
+    </div>
+  </motion.div>
+</Modal>
+
     </motion.div>
   );
 };

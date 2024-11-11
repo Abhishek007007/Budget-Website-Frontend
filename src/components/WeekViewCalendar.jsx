@@ -128,11 +128,12 @@ const WeekViewCalendar = () => {
               flexDirection: "column",
               justifyContent: "center",
               placeItems: "center",
-
+              border: "1px solid rgba(0, 0, 0, 0.1)",
+      
               backgroundColor:
                 day.toDateString() === new Date().toDateString()
                   ? "#e6f7ff"
-                  : "rgba(186, 186, 186, 0.1)",
+                  : "rgba(186, 186, 186, 0.00)",
               color:
                 day.toDateString() === new Date().toDateString()
                   ? "#1890ff"

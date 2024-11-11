@@ -3,6 +3,7 @@ import { Modal, List, Input, Button, message as AntMessage } from "antd";
 import axios from "axios";
 import axiosPrivate from "../axiosInterceptors/axiosPrivate";
 import { useSelector } from "react-redux";
+import { ReloadOutlined } from "@ant-design/icons";
 
 const { TextArea } = Input;
 
@@ -104,13 +105,18 @@ const ChatModal = ({ groupId, selectedChat, onClose }) => {
           placeholder="Type your message"
           rows={2}
         />
-        <Button
+       <div className="d-flex flex-row">
+       <Button
           type="primary"
           onClick={handleSendMessage}
           style={{ marginTop: "10px", width: "100%" }}
         >
           Send
         </Button>
+        <Button  style={{ marginTop: "10px" }} type="link" onClick={fetchMessages} disabled={loading}>
+            <ReloadOutlined/>
+          </Button>
+       </div>
       </div>
     </Modal>
   );

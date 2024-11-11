@@ -232,6 +232,7 @@ const CreateBudget = () => {
                   boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
                   backgroundColor: "#e6f7ff",
                   color: "#1890ff",
+                  height: "220px"
                 }}
               >
                 <p style={{ fontSize: "24px", fontWeight: "bold" }}>
@@ -290,8 +291,10 @@ const CreateBudget = () => {
 
           {/* Option to Remove Budget */}
           <Button
-            type="danger"
-            style={{ marginTop: "20px", marginLeft: "10px", color: "white" }}
+             type="primary"
+             danger
+          
+             style={{ marginLeft: "16px", backgroundColor: "#f5222d" }}
             onClick={onRemoveBudget}
           >
             Remove Budget

@@ -37,7 +37,7 @@ function Dashboard() {
         },
       },
       stroke: {
-        width: 2,
+        width: 3,
         curve: "smooth",
       },
       title: {
@@ -66,7 +66,7 @@ function Dashboard() {
         shared: true,
         intersect: false,
       },
-      colors: ["#1890ff", "#ff4d4f"],
+      colors: ["#189000", "#ff4d4f"],
     },
   });
 

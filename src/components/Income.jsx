@@ -26,7 +26,7 @@ function Income() {
       transition={{ duration: 0.6 }}   // Animation duration
       className="w-100 h-100 p-3"
     >
-      <MDBCard className="w-100 h-100 p-3 d-flex flex-column overflow-hidden">
+      <div className="w-100 h-100 p-3 d-flex flex-column overflow-hidden">
         <div className="w-100 h-100 d-flex flex-column">
           {/* IncomeSource with animation */}
           <motion.div
@@ -55,7 +55,7 @@ function Income() {
             <IncomeItems />
           </motion.div>
         </div>
-      </MDBCard>
+      </div>
     </motion.div>
   );
 }

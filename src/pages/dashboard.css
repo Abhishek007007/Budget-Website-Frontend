@@ -68,3 +68,26 @@ body {
 /* .ant-btn-primary:disabled {
   opacity: 0.75;
 } */
+/* dashboard.css */
+
+/* Add animation on hover for the icons */
+.animated-icon {
+  transition: transform 0.3s ease-in-out;
+}
+
+.animated-icon:hover {
+  transform: scale(1.2); /* Scale the icon on hover */
+}
+
+/* Add this to your CSS file */
+@keyframes shake {
+  0% { transform: translateX(-10px); }
+  25% { transform: translateX(10px); }
+  50% { transform: translateX(-10px); }
+  75% { transform: translateX(10px); }
+  100% { transform: translateX(0); }
+}
+
+.alert-shake {
+  animation: shake 0.5s ease-in-out;
+}
