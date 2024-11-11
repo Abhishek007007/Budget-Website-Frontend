@@ -5,6 +5,7 @@ import { clearBudget } from "../redux/budgetSlice";
 import { clearExpense } from "../redux/expenseSlice";
 import { clearIncome } from "../redux/incomeSlice";
 import { clearTransactions } from "../redux/transactionSlice";
+import { userLogout } from "../redux/authSlice";
 
 const axiosPrivate = axios.create({
   baseURL: import.meta.env.VITE_BASE_API_URL,
@@ -37,6 +38,7 @@ async function refreshAccessToken(store) {
     await store.dispatch(clearIncome());
     await store.dispatch(clearTransactions());
     await store.dispatch(clearBudget());
+    await store.dispatch(userLogout())
   }
 }
 axiosPrivate.interceptors.request.use((config) => {

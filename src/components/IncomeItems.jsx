@@ -141,7 +141,6 @@ function IncomeItems() {
       colors: ['#52c41a'],  // Set a color for the bars (you can provide an array of colors if needed)
     },
   };
-  
 
   const columns = [
     {
@@ -253,23 +252,23 @@ function IncomeItems() {
     <div className="w-100 h-100 d-flex flex-column">
       <div className="w-100 d-flex flex-row justify-content-between align-items-center">
         <h5>Income Items</h5>
-       <div>
-       <Button
-          type="primary"
-          onClick={() => {
-            setIsAddingItem(true);
-          }}
-        >
-          Add Income Item
-        </Button>
-        <Button
-        className="mx-3"
-          type="default"
-          onClick={() => setIsGraphModalVisible(true)}
-        >
-          View Income Graph
-        </Button>
-       </div>
+        <div>
+          <Button
+            type="primary"
+            onClick={() => {
+              setIsAddingItem(true);
+            }}
+          >
+            Add Income Item
+          </Button>
+          <Button
+            className="mx-3"
+            type="default"
+            onClick={() => setIsGraphModalVisible(true)}
+          >
+            View Income Graph
+          </Button>
+        </div>
       </div>
 
       {/* Modal for Adding a New Income Item */}
@@ -298,6 +297,7 @@ function IncomeItems() {
               name="amount"
               value={form.amount}
               onChange={handleChange}
+              type="number"
             />
           </Form.Item>
 
@@ -311,8 +311,8 @@ function IncomeItems() {
 
           <Form.Item label="Date" required>
             <Input
-              type="date"
               name="date"
+              type="date"
               value={form.date}
               onChange={handleChange}
             />
@@ -320,9 +320,66 @@ function IncomeItems() {
         </Form>
       </Modal>
 
+      {/* Modal for Editing an Income Item */}
+      <Modal
+        title="Edit Income Item"
+        visible={isEditingItem}
+        onCancel={() => setIsEditingItem(false)}
+        onOk={handleEditSubmit}
+        width={600}
+      >
+        <Form layout="vertical" onFinish={handleEditSubmit}>
+          <Form.Item label="Income Source" required>
+            <Select
+              value={form.source}
+              onChange={(value) => setForm({ ...form, source: value })}
+            >
+              {income.incomeSourceList.map((source, index) => (
+                <Select.Option key={index} value={index}>
+                  {source.source_name}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+
+          <Form.Item label="Amount" required>
+            <Input
+              name="amount"
+              value={form.amount}
+              onChange={handleChange}
+              type="number"
+            />
+          </Form.Item>
+
+          <Form.Item label="Description">
+            <Input
+              name="description"
+              value={form.description}
+              onChange={handleChange}
+            />
+          </Form.Item>
+
+          <Form.Item label="Date" required>
+            <Input
+              name="date"
+              type="date"
+              value={form.date}
+              onChange={handleChange}
+            />
+          </Form.Item>
+        </Form>
+      </Modal>
+
+      {/* Table for displaying income items */}
+      <Table
+        columns={columns}
+        dataSource={filteredIncomeItems}
+        rowKey="id"
+      />
+
       {/* Modal for Graph */}
       <Modal
-        title="Income Over Last 10 Days"
+        title="Income Graph"
         visible={isGraphModalVisible}
         onCancel={() => setIsGraphModalVisible(false)}
         footer={null}
@@ -335,14 +392,6 @@ function IncomeItems() {
           height={350}
         />
       </Modal>
-
-      {/* Table for displaying income items */}
-      <Table
-        columns={columns}
-        dataSource={filteredIncomeItems}
-        rowKey="id"
-        pagination={{ pageSize: 5 }}
-      />
     </div>
   );
 }
