@@ -11,7 +11,7 @@ import {
   DatePicker,
   Spin,
 } from "antd";
-import loginVideo from '../assets/MicrosoftTeams-video (1).mp4'
+import loginVideo from '../assets/MicrosoftTeams-video2.mp4'
 import { LoadingOutlined, MessageFilled, RobotFilled, SearchOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { getTransactions } from "../redux/transactionSlice";
