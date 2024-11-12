@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Card, Col, Row, Spin, Typography, message, Select, Input, DatePicker, Pagination } from "antd";
+import { Card, Col, Row, Spin, Typography, message, Select, Input, DatePicker, Pagination, Skeleton } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
-
 
 const { Title } = Typography;
 const { RangePicker } = DatePicker;
@@ -72,7 +71,35 @@ const NewsComponent = () => {
   );
 
   if (loading) {
-    return <Spin size="large" />;
+    return (
+      <div style={{ padding: "20px" }}>
+        <Title level={2}>Financial News</Title>
+        {/* Search and Filter Controls */}
+        <div style={{ marginBottom: 20 }}>
+          <Skeleton.Input active style={{ width: 300, marginRight: 20 }} />
+          <Skeleton.Input active style={{ width: 200, marginRight: 20 }} />
+          <Skeleton.Input active style={{ width: 200 }} />
+        </div>
+
+        {/* News Articles Skeleton Loader */}
+        <Row gutter={[16, 16]}>
+          {Array(3)
+            .fill(null)
+            .map((_, index) => (
+              <Col span={8} key={index}>
+                <Skeleton loading={loading} active>
+                  <Card hoverable>
+                    <Card.Meta title={<Skeleton.Input active />} description={<Skeleton.Input active />} />
+                  </Card>
+                </Skeleton>
+              </Col>
+            ))}
+        </Row>
+
+        {/* Pagination Skeleton */}
+        <Skeleton.Button active style={{ marginTop: 20, width: 120 }} />
+      </div>
+    );
   }
 
   if (error) {

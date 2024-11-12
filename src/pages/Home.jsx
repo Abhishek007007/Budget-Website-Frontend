@@ -1,20 +1,19 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { motion } from "framer-motion"; // Import framer-motion
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   UserOutlined,
-  VideoCameraOutlined,
-  UploadOutlined,
-  SettingOutlined,
-  BellOutlined,
-  AppstoreAddOutlined,
-  DollarCircleOutlined,
   TransactionOutlined,
   CreditCardOutlined,
+  DollarCircleOutlined,
+  AppstoreAddOutlined,
   GroupOutlined,
   PaperClipOutlined,
   RadiusBottomleftOutlined,
+  SettingOutlined,
+  BellOutlined,
 } from "@ant-design/icons";
 import {
   Button,
@@ -33,10 +32,7 @@ import Transactions from "../components/Transactions";
 import Expenses from "../components/Expenses";
 import Income from "../components/Income";
 import Settings from "../components/Settings";
-
-import "./dashboard.css"; // Import the CSS file
 import CreateBudget from "../components/Budget";
-
 import { clearBudget } from "../redux/budgetSlice";
 import { clearExpense } from "../redux/expenseSlice";
 import { clearIncome } from "../redux/incomeSlice";
@@ -85,9 +81,9 @@ function Home() {
       case "FinancialGoals":
         return <FinancialGoals />;
       case "News":
-        return <NewsComponent/>
+        return <NewsComponent />;
       case "Bills":
-        return <BillReminderComponent/>
+        return <BillReminderComponent />;
       default:
         return <Dashboard />;
     }
@@ -107,6 +103,7 @@ function Home() {
     <Layout
       style={{ height: "100vh", background: "transparent", overflowY: "none" }}
     >
+      {/* Sidebar with Framer Motion for collapse animation */}
       <Sider
         trigger={null}
         collapsible
@@ -118,7 +115,12 @@ function Home() {
           zIndex: 10,
         }}
       >
-        <div style={{ padding: "16px", textAlign: "center" }}>
+        <motion.div
+          style={{ padding: "16px", textAlign: "center" }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
           {collapsed ? (
             <Title level={5} style={{ color: "#ffffff", margin: 0 }}>
               B
@@ -128,7 +130,7 @@ function Home() {
               BudgetWise
             </Title>
           )}
-        </div>
+        </motion.div>
         <Menu
           style={{ backgroundColor: "transparent" }}
           theme="dark"
@@ -138,67 +140,119 @@ function Home() {
           items={[
             {
               key: "Dashboard",
-              icon: <UserOutlined style={{ color: "#ffffff" }} />,
+              icon: (
+                <UserOutlined
+                  className="animated-icon"
+                  style={{ color: "#ffffff" }}
+                />
+              ),
               label: "Dashboard",
               onClick: () => setSelectedTab("Dashboard"),
             },
             {
               key: "Transactions",
-              icon: <TransactionOutlined style={{ color: "#ffffff" }} />,
+              icon: (
+                <TransactionOutlined
+                  className="animated-icon"
+                  style={{ color: "#ffffff" }}
+                />
+              ),
               label: "Transactions",
               onClick: () => setSelectedTab("Transactions"),
             },
             {
               key: "Expenses",
-              icon: <CreditCardOutlined style={{ color: "#ffffff" }} />,
+              icon: (
+                <CreditCardOutlined
+                  className="animated-icon"
+                  style={{ color: "#ffffff" }}
+                />
+              ),
               label: "Expenses",
               onClick: () => setSelectedTab("Expenses"),
             },
             {
               key: "Income",
-              icon: <DollarCircleOutlined style={{ color: "#ffffff" }} />,
+              icon: (
+                <DollarCircleOutlined
+                  className="animated-icon"
+                  style={{ color: "#ffffff" }}
+                />
+              ),
               label: "Income",
               onClick: () => setSelectedTab("Income"),
             },
             {
               key: "FinancialGoals",
-              icon: <DollarCircleOutlined style={{ color: "#ffffff" }} />,
+              icon: (
+                <DollarCircleOutlined
+                  className="animated-icon"
+                  style={{ color: "#ffffff" }}
+                />
+              ),
               label: "Financial Goals",
               onClick: () => setSelectedTab("FinancialGoals"),
             },
             {
               key: "Budgets",
-              icon: <AppstoreAddOutlined style={{ color: "#ffffff" }} />,
+              icon: (
+                <AppstoreAddOutlined
+                  className="animated-icon"
+                  style={{ color: "#ffffff" }}
+                />
+              ),
               label: "Budgets",
               onClick: () => setSelectedTab("Budgets"),
             },
             {
-              key: 'Groups',
-              icon: <GroupOutlined style={{ color: '#ffffff' }} />,
-              label: 'Groups',
+              key: "Groups",
+              icon: (
+                <GroupOutlined
+                  className="animated-icon"
+                  style={{ color: "#ffffff" }}
+                />
+              ),
+              label: "Groups",
               onClick: () => setSelectedTab("Groups"),
             },
             {
-              key: 'Bills',
-              icon: <RadiusBottomleftOutlined style={{ color: '#ffffff' }} />,
-              label: 'Bills',
+              key: "Bills",
+              icon: (
+                <RadiusBottomleftOutlined
+                  className="animated-icon"
+                  style={{ color: "#ffffff" }}
+                />
+              ),
+              label: "Bills",
               onClick: () => setSelectedTab("Bills"),
             },
             {
-              key: 'News',
-              icon: <PaperClipOutlined style={{ color: '#ffffff' }} />,
-              label: 'News',
+              key: "News",
+              icon: (
+                <PaperClipOutlined
+                  className="animated-icon"
+                  style={{ color: "#ffffff" }}
+                />
+              ),
+              label: "News",
               onClick: () => setSelectedTab("News"),
             },
             {
-              key: 'Settings',
-              icon: <SettingOutlined style={{ color: '#ffffff' }} />,
-              label: 'Settings',
+              key: "Settings",
+              icon: (
+                <SettingOutlined
+                  className="animated-icon"
+                  style={{ color: "#ffffff" }}
+                />
+              ),
+              label: "Settings",
               onClick: () => setSelectedTab("Settings"),
             },
           ]}
         />
       </Sider>
+
+      {/* Content with Framer Motion for tab transitions */}
       <Layout style={{ marginTop: 16, marginRight: 16 }}>
         <Header
           style={{
@@ -247,6 +301,7 @@ function Home() {
             </Button>
           </div>
         </Header>
+
         <Content
           style={{
             backgroundColor: "#ffffff",
@@ -256,7 +311,15 @@ function Home() {
             borderBottomRightRadius: "20px",
           }}
         >
-          <Tab />
+          {/* Animate Tab Transitions */}
+          <motion.div
+            key={selectedTab}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Tab />
+          </motion.div>
         </Content>
       </Layout>
     </Layout>

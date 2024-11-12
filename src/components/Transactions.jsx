@@ -11,11 +11,13 @@ import {
   DatePicker,
   Spin,
 } from "antd";
-import { LoadingOutlined, SearchOutlined } from "@ant-design/icons";
+import loginVideo from '../assets/MicrosoftTeams-video (1).mp4'
+import { LoadingOutlined, MessageFilled, RobotFilled, SearchOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { getTransactions } from "../redux/transactionSlice";
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai"; // Import Gemini SDK
 import { HumanMessage } from "@langchain/core/messages"; // Import HumanMessage to format requests
+import { motion } from "framer-motion"; // Import motion
 
 const { Option } = Select;
 const { Text } = Typography;
@@ -150,60 +152,109 @@ const Transactions = () => {
   };
 
   return (
-    <div>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
       <br />
       <Space style={{ marginBottom: 16 }}>
-        <Input
-          placeholder="Search"
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-          prefix={<SearchOutlined />}
-        />
-        <Select
-          value={categoryFilter}
-          onChange={(value) => setCategoryFilter(value)}
-          style={{ width: 120 }}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
         >
-          <Option value="all">All</Option>
-          <Option value="income">Income</Option>
-          <Option value="expense">Expense</Option>
-        </Select>
-        <RangePicker
-          style={{ marginLeft: 10 }}
-          onChange={handleDateRangeChange}
-          format="YYYY-MM-DD"
-        />
-        <Button type="primary" onClick={handleShowInsights}>
-          Show Insights
-        </Button>
+          <Input
+            placeholder="Search"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            prefix={<SearchOutlined />}
+          />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          <Select
+            value={categoryFilter}
+            onChange={(value) => setCategoryFilter(value)}
+            style={{ width: 120 }}
+          >
+            <Option value="all">All</Option>
+            <Option value="income">Income</Option>
+            <Option value="expense">Expense</Option>
+          </Select>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+        >
+          <RangePicker
+            style={{ marginLeft: 10 }}
+            onChange={handleDateRangeChange}
+            format="YYYY-MM-DD"
+          />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+        >
+          <Button type="primary" onClick={handleShowInsights}>
+            <MessageFilled/>  AI Insights
+          </Button>
+        </motion.div>
       </Space>
 
-      <Table
-        columns={columns}
-        dataSource={data}
-        pagination={{
-          current: pagination.current,
-          pageSize: pagination.pageSize,
-          total: filteredData.length,
-          onChange: handlePageChange,
-        }}
-      />
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.5 }}
+      >
+        <Table
+          columns={columns}
+          dataSource={data}
+          pagination={{
+            current: pagination.current,
+            pageSize: pagination.pageSize,
+            total: filteredData.length,
+            onChange: handlePageChange,
+          }}
+        />
+      </motion.div>
 
       <Modal
-        title="Transaction Insights"
-        visible={isModalVisible}
-        onCancel={() => setIsModalVisible(false)}
-        footer={null}
-      >
-        <Text>
-          {insights || (
-            <Spin
-              indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />}
-            />
-          )}
-        </Text>
-      </Modal>
+  title="Transaction Insights"
+  visible={isModalVisible}
+  onCancel={() => setIsModalVisible(false)}
+  footer={null}
+>
+  <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ duration: 0.5 }}
+  >
+    <div className="text-center">
+      {!insights ? (
+        <>
+          <p>Fetching insights...</p>
+          <video className="w-50" autoPlay loop muted>
+            <source src={loginVideo} type="video/mp4" />
+          </video>
+        </>
+      ) : (
+        <Text>{insights}</Text>
+      )}
     </div>
+  </motion.div>
+</Modal>
+
+    </motion.div>
   );
 };
 

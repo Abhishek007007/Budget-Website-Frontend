@@ -57,7 +57,13 @@ const WeekViewCalendar = () => {
   };
 
   return (
-    <div style={{ textAlign: "center", width: "100%" }}>
+    <Card  style={{
+      textAlign: 'center',
+      width: "100%",
+      borderRadius: "20px",
+      boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
+      marginBottom: "20px",
+    }}>
       {/* Navigation Controls */}
       <div
         className="py-2"
@@ -122,11 +128,12 @@ const WeekViewCalendar = () => {
               flexDirection: "column",
               justifyContent: "center",
               placeItems: "center",
-
+              border: "1px solid rgba(0, 0, 0, 0.1)",
+      
               backgroundColor:
                 day.toDateString() === new Date().toDateString()
                   ? "#e6f7ff"
-                  : "#f0f0f0",
+                  : "rgba(186, 186, 186, 0.00)",
               color:
                 day.toDateString() === new Date().toDateString()
                   ? "#1890ff"
@@ -153,7 +160,7 @@ const WeekViewCalendar = () => {
           </div>
         ))}
       </div>
-    </div>
+    </Card>
   );
 };
 
